@@ -1,0 +1,51 @@
+%div
+  %div{:align => 'left', :class => 'dashboard_header'}
+    %text Events and Activity Tracking System
+  %div{:align => 'right', :class => 'dashboard_header'}
+    = link_to 'Home', eats_wall_path
+    |
+    = link_to 'Notifications'
+    |
+    = link_to "#{session[:account]['first_name']} #{session[:account]['last_name']}", showProfile_path(session[:account]["id"])
+    |
+    = link_to 'Log out', log_out_path
+
+%div{:align => "center"}
+  %div{:style => "width:60%;", :align => "left"}
+    %h3{:align => "center"}
+      =@event.title
+    %hr
+    %div{:style=>"float:left;width:50%", :align=>"left"}
+      %text Start: 
+      %text
+        = @event.start.strftime("%B %-d, %Y at %I:%M %p")
+    %div{:style=>"float:right;width:50%", :align=>"right"}
+      %text End: 
+      %text
+        = @event.end.strftime("%B %-d, %Y at %I:%M %p")
+    %br
+    %text Created by:
+    =link_to "#{@creator_name.first_name} #{@creator_name.last_name}", "/profile/#{@event.creator}"
+    - if @event.is_group_event
+      %br
+      %text In group: 
+      = link_to "#{@group.name}", "/group/#{@group.id}"
+    %br
+    %text Tags:
+    - @event.tags.each do |id, name|
+      = link_to "#{name}", showProfile_path(id)
+      %br
+    %text Description:
+    %p{:style => "text-indent:5%"}
+      = @event.description
+    %div{:align => "right"}
+      - if session[:account]["id"] == @event.creator
+        %button{:onclick => "editEvent(#{@event.id})"} Edit
+        %button Delete
+      - elsif @event.tags.has_key?(session[:account]["id"])
+        %button Remove tag
+- if session[:account]["id"] == @event.creator
+  %div#edit_event_form_div_div.add_event_form-div
+    %div.add_event_form-content
+      %span.add_event_form-close{:onclick => "hideEditEventForm()"} ×
+      %div#edit_event_form_div

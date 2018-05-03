@@ -1,0 +1,146 @@
+%div
+  %div{:align => 'left', :class => 'dashboard_header'}
+    = "Group: " + @group.name
+  %div{:align => 'right', :class => 'dashboard_header'}
+    = link_to 'Home', eats_wall_path
+    |
+    = link_to 'Notifications'
+    |
+    = link_to "#{session[:account]['first_name']} #{session[:account]['last_name']}", showProfile_path(session[:account]["id"])
+    |
+    = link_to 'Log out', log_out_path
+
+%div.nav_bar
+  - if @is_admin and @is_member
+    %br
+    %button#add_event_button{:onclick => "showAddEventForm()"} Add event to group
+    %br
+    %br
+  %text Admin/s:
+  %br
+    - @groupAdmins.each do |admin|
+      = link_to "#{admin.first_name} #{admin.last_name}", showProfile_path(admin.id)
+      - if @is_admin and @is_member
+        = link_to "Remove from Admin", remove_from_admin_path(@group.id, admin.id)
+      %br
+  %text Member/s:
+  %br
+    - @groupMembers.each do |member|
+      = link_to "#{member.first_name} #{member.last_name}", showProfile_path(member.id)
+      - if @is_admin and @is_member
+        = link_to "Make Admin", change_to_admin_path(@group.id, member.id)
+      %br
+  - if @is_admin and @is_member
+    %br
+    %button#add_member_button{:onclick => "showAddMemberGroupForm()"} Edit Members
+    %br
+    %br
+    %button#delete_group_button{:onclick => "showDeleteGroupConfirmationForm()"} Delete group
+    %hr
+    %text Join Requests
+    %br
+    - if @joinRequests.length > 0
+      - @joinRequests.each do |user|
+        = link_to "#{user.first_name} #{user.last_name}", showProfile_path(user.id)
+        = link_to "Accept", join_group_response_path("true", @group.id, user.id)
+        = link_to "Reject", join_group_response_path("false", @group.id, user.id)
+        %br
+    - else
+      %text No Requests
+      %br
+  - if !@is_member
+    = link_to "Join Group", join_group_path(@group.id, session[:account]["id"])
+
+%div{:id => 'calendar'}
+  %div{:id =>'c_view'}
+  
+:javascript
+  $(document).ready( function() {
+    var day = new Date();
+    day = day.getMonth()+1 + "-" + day.getDate() + "-" + day.getFullYear();
+    $('#c_view').load('/load_calendar/month/'+day+'/group_#{@group.id}');
+  } );
+  
+%div
+  %text Created by: 
+  = @group.creator_name
+  %table
+    %thead
+      %tr
+        %th Title
+        %th Start
+        %th End
+        %th Description
+    %tbody
+    - @group_events.each do |event|
+      %tr
+        %td
+          = event.title
+        %td
+          = event.start
+        %td
+          = event.end
+        %td
+          = event.description
+
+
+%div#add_event_form_div.add_event_form-div
+  %div.add_event_form-content
+    %span.add_event_form-close{:onclick => "hideAddEventForm()"} ×
+    %br
+    %div
+      %h6 Add Event to #{'"' + @group.name + '"'}
+      = form_tag add_event_path, :id => 'add_event_form', :method => :post do
+        = hidden_field_tag :new_event_is_group_event, true
+        = hidden_field_tag :new_event_group_id, "#{@group.id}"
+        = label :new_event, :title, 'Title', :class => 'add_event_label'
+        = text_field :new_event, 'title', required:true
+        %br
+        %div{:id => 'tags_list'}
+          = text_field :new_event, :tags, :style => 'display:none'
+        %br
+        = label :new_event, :start_date, 'Start Date', :class => 'add_event_label'
+        = date_field :new_event, 'start_date', required:true, :value => "#{Time.now.strftime('%Y-%m-%d')}"
+        = time_field :new_event, 'start_time', :value =>"00:00"
+        %br
+        = label :new_event, :end_date, 'End Date', :class => 'add_event_label'
+        = date_field :new_event, 'end_date', required:true, :value => "#{Time.now.strftime('%Y-%m-%d')}"
+        = time_field :new_event, 'end_time', :value =>"23:59"
+        %br
+        = label :new_event, :description, 'Description', :class => 'add_event_label'
+        = text_field :new_event, 'description', required:true
+        %br
+        = label :new_event, '', :class => 'add_event_label'
+        %input{:checked => "checked", :name => "new_event[public]", :type => "radio", :value => "1"}Public
+        %input{:name => "new_event[public]", :type => "radio", :value => "0"}Private
+        %br
+        = submit_tag 'Add Event'
+
+%div#add_member_form_div.add_event_form-div
+  %div.add_event_form-content
+    %span.add_event_form-close{:onclick => "hideAddMemberGroupForm()"} ×
+    %br
+    %div
+      %h6 Edit Members
+      = form_tag group_members_update_path(@group.id), :id => 'add_members_form', :method => :post do
+        = label :new_group, :members, 'Edit members', :class => 'add_event_label'
+        = text_field :new_group, :add_members_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off'
+        %select{:id => 'add_member_suggestion_list', :onchange => 'addMemberListChange(this)'}
+          %option{:value => 'null'}
+            = "--"
+        
+        %div{:id => 'add_members_list'}
+          = text_field :new_group, :members, :style => 'display:none'
+        :javascript
+          $(document).ready( function() {
+            var list = "#{@membersList}";
+            $('#add_members_list').load('/addMemberList/'+list);
+          } );
+        %br
+        = submit_tag 'Save changes'
+		
+%div#delete_group_confirmation_div.add_event_form-div
+  %div.add_event_form-content
+    %text Are you sure you want to delete this group?
+    = button_to "Yes", delete_group_path, method: :delete
+    %button#delete_group_confirmation_no{:onclick => "hideDeleteGroupConfirmationForm()"} No

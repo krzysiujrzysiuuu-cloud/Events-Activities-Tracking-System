@@ -22,7 +22,7 @@ class AccountController < ApplicationController
 		elsif(currently_logged_in.length == 1)
 			flash[:notice] = "You have logged in"
 			currently_logged_in.each{ |acc|
-				session_account = {:username => acc[:username], :password => acc[:password], :first_name => acc[:first_name], :last_name => acc[:last_name]}
+				session_account = {:id => acc[:id], :username => acc[:username], :first_name => acc[:first_name], :last_name => acc[:last_name]}
 				session[:account] = session_account
 			}
 			redirect_to eats_wall_path
@@ -42,6 +42,8 @@ class AccountController < ApplicationController
 			flash[:warning] = "Username already exists!"
 		elsif !Account.where(:email => new_account[:email]).empty?
 			flash[:warning] = "Email is already in use!"
+		elsif !Account.where(:first_name => new_account[:first_name], :last_name => new_account[:last_name]).empty?
+			flash[:warning] = "Name is already in use!"
 		elsif(new_account[:password] == new_account[:confirm_password])
 			fn = new_account[:first_name]
 			ln = new_account[:last_name]

@@ -57,6 +57,44 @@ Rails.application.routes.draw do
   post '/sign_up' => 'account#signup', as: :sign_up
   get '/login' => 'account#login', as: :log_in
   get '/logout' => 'account#logout', as: :log_out
+  
   get '/events' => 'eats#index', as: :eats_wall
-  get '/add_event' => 'eats#new', as: :eats_new
+  post '/add_event' => 'eats#new', as: :add_event
+  get '/edit_event/:id' => 'eats#editEvent', as: :edit_event
+  put '/update_event/:id' => 'eats#updateEvent', as: :update_event
+  
+  get '/profile/:id' => 'eats#showProfile', as: :showProfile
+  get '/event/:id' => 'eats#showEvent', as: :showEvent
+  
+  post '/create_group' => 'eats#createGroup', as: :create_group
+  delete '/delete_group/:id' => 'eats#deleteGroup', as: :delete_group
+  get '/group/:id' => 'eats#showGroupProfile', as: :show_group_profile
+  post '/memberschange/:id' => 'eats#membersUpdate', as: :group_members_update
+  get '/to_admin/:group_id/:acc_id' => 'eats#changeToAdmin', as: :change_to_admin
+  get '/remove_from_admin/:group_id/:acc_id' => 'eats#removeFromAdmin', as: :remove_from_admin
+  get '/join_group/:group_id/:acc_id' => 'eats#joinGroup', as: :join_group
+  get '/join_request_response/:accept/:group_id/:acc_id' => 'eats#joinGroupResponse', as: :join_group_response
+  
+  get '/suggestInput/:name/:id/:with_group' => 'eats#suggestInput', as: :suggestInput
+  get '/suggestInput/' => 'eats#suggestInput', as: :emptySuggestInput
+  get '/addTag/:tags' => 'eats#addTag', as: :addTag
+  get '/addTag/' => 'eats#addTag', as: :addEmptyTag
+  get '/removeTag/:tags/:id' => 'eats#removeTag', as: :removeTag
+  get '/addSearchList/:searches' => 'eats#addSearchList', as: :addSearchList
+  get '/addSearchList/' => 'eats#addSearchList', as: :addEmptySearchList
+  get '/removeSearch/:searches/:id' => 'eats#removeSearch', as: :removeSearch
+  
+  get '/searchSchedules/:ids' => 'eats#searchSchedules', as: :searchSchedules
+  get '/searchSchedules/' => 'eats#searchSchedules', as: :emptySearchSchedules
+  
+  get '/addMemberList/:ids' => 'eats#addMemberList', as: :addMemberList
+  get '/addMemberList/' => 'eats#addMemberList', as: :emptyMemberList
+  get '/removeAddMember/:ids/:id' => 'eats#removeAddMember', as: :removeAddMember
+  
+  get '/editAddTag/:tags' => 'eats#editAddTag', as: :editAddTag
+  get '/editAddTag/' => 'eats#editAddTag', as: :editAddEmptyTag
+  get '/editRemoveTag/:tags/:id' => 'eats#editRemoveTag', as: :editRemoveTag
+  
+  get '/load_calendar/:view_type/:day/:ids' => 'eats#loadCalendar', as: :load_calendar
+  get '/load_calendar/:view_type/:day/' => 'eats#loadCalendar', as: :load_empty_calendar
 end

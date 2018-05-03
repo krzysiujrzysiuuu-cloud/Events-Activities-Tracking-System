@@ -6,8 +6,7 @@
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
 
-  %body
-    %h1.title Events and Activities Tracking System
+  %body{:style => 'margin:0;'}
     #main
       - if flash[:notice]
         #notice.message= flash[:notice]

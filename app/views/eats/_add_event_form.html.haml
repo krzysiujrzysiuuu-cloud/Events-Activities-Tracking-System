@@ -1,0 +1,33 @@
+%div
+  %h6 Add Event Form
+  = form_tag add_event_path, :id => 'add_event_form', :method => :post do
+    = hidden_field_tag :new_event_is_group_event, false
+    = hidden_field_tag :new_event_group_id
+    = label :new_event, :title, 'Title', :class => 'add_event_label'
+    = text_field :new_event, 'title', required:true
+    %br
+    = label :new_event, :tags, 'Tags', :class => 'add_event_label'
+    %div.add_event_tags
+      = text_field :new_event, :tags_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off'
+      %select{:id => 'tag_suggestion_list', :onchange => 'tagListChange(this)'}
+        %option{:value => 'null'}
+          = "--"
+      %div{:id => 'tags_list'}
+        = text_field :new_event, :tags, :style => 'display:none'
+    %br
+    = label :new_event, :start_date, 'Start Date', :class => 'add_event_label'
+    = date_field :new_event, 'start_date', required:true, :value => "#{Time.now.strftime('%Y-%m-%d')}"
+    = time_field :new_event, 'start_time', :value =>"00:00"
+    %br
+    = label :new_event, :end_date, 'End Date', :class => 'add_event_label'
+    = date_field :new_event, 'end_date', required:true, :value => "#{Time.now.strftime('%Y-%m-%d')}"
+    = time_field :new_event, 'end_time', :value =>"23:59"
+    %br
+    = label :new_event, :description, 'Description', :class => 'add_event_label'
+    = text_field :new_event, 'description', required:true
+    %br
+    = label :new_event, '', :class => 'add_event_label'
+    %input{:checked => "checked", :name => "new_event[public]", :type => "radio", :value => "1"}Public
+    %input{:name => "new_event[public]", :type => "radio", :value => "0"}Private
+    %br
+    = submit_tag 'Add Event'

@@ -1,0 +1,26 @@
+%table
+      %thead
+        %tr
+          %th Title
+          %th Start
+          %th End
+          %th Description
+          %th Tags
+          %th More
+      %tbody
+      - @events_today.each do |event|
+        %tr
+          %td
+            = event.title
+          %td
+            = event.start
+          %td
+            = event.end
+          %td
+            = event.description
+          %td
+            - event.tags.each do |id, name|
+              = link_to "#{name}", showProfile_path(id)
+          %td
+            - if event.creator == session[:account]["id"]
+              %button{:onclick => "editEvent(#{event.id})"} Edit

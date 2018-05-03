@@ -1,6 +1,70 @@
-Logged in as 
-= @first_name
-= @last_name
-%br
-= link_to 'Create Event', eats_new
-= link_to 'Log out', log_out_path
+%div
+  %div{:align => 'left', :class => 'dashboard_header'}
+    %text Events and Activity Tracking System
+  %div{:align => 'right', :class => 'dashboard_header'}
+    = link_to 'Home', eats_wall_path
+    |
+    = link_to 'Notifications'
+    |
+    = link_to "#{session[:account]['first_name']} #{session[:account]['last_name']}", showProfile_path(session[:account]["id"])
+    |
+    = link_to 'Log out', log_out_path
+
+%div.nav_bar
+  %br
+  %div
+    %h6 Search
+    %input{:type => 'text', :oninput => 'suggestInput(this.id)', :id => 'search_bar'}
+    %br
+    %select{:id => 'search_suggestion_list', :onchange => 'searchListChange(this)'}
+      %option{:value => 'null'}
+        = "--"
+    %h6 Searches:
+    %div{:id => 'search_list', :style => 'max-width:200px'}
+      %input{:type => 'text', :id => 'search_ids', :style => 'display:none'}
+  %hr{:style => 'width:90%;'}
+  %br
+  %button#add_event_button{:onclick => "showAddEventForm()"} Create Event
+  %hr{:style => 'width:90%'}
+  %div
+    %h6 Groups
+    - @groups.each do |group|
+      = link_to "#{group.name}", show_group_profile_path(group.id)
+      %br
+  %button#create_group_button{:onclick => "showCreateGroupForm()"} Create Group
+
+:javascript
+  $(document).ready( function() {
+    var list = "#{@search_list}";
+    $('#search_list').load('/addSearchList/'+list);
+  } );
+
+- #this div below is for events today
+%div
+  %h6 Today
+  - if @events_today.length > 0
+    = render "events_today"
+  - else
+    %br
+    %text "No Events for today!"
+
+- #this is for search
+%div{:id => 'calendar'}
+  %div{:id =>'c_view'}
+%div{:id => 'searched_schedules'}
+
+%div#add_event_form_div.add_event_form-div
+  %div.add_event_form-content
+    %span.add_event_form-close{:onclick => "hideAddEventForm()"} ×
+    %br
+    = render "add_event_form"
+%div#edit_event_form_div_div.add_event_form-div
+  %div.add_event_form-content
+    %span.add_event_form-close{:onclick => "hideEditEventForm()"} ×
+    %div#edit_event_form_div
+
+%div#create_group_div.add_event_form-div
+  %div.add_event_form-content
+    %span.add_event_form-close{:onclick => "hideCreateGroupForm()"} ×
+    %br
+    = render "create_group_form"

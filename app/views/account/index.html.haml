@@ -1,30 +1,29 @@
-= form_tag log_in_path, :id => 'log_in_form', :method => :get do
-  = label :log_in, :username, 'Username'
-  = text_field :log_in, 'username', required:true 
-  %br
-  = label :log_in, :password, 'Password'
-  = password_field :log_in, 'password', required:true
-  %br
-  = submit_tag 'Log in'
-%br
+%div.log_in_home_page{:align => 'right'}
+  = form_tag log_in_path, :id => 'log_in_form', :method => :get do
+    = label :log_in, :username, 'Username'
+    = text_field :log_in, 'username', required:true 
+    = label :log_in, :password, 'Password'
+    = password_field :log_in, 'password', required:true
+    = submit_tag 'Log in'
 
-= form_tag sign_up_path, :id=>'sign_up_form', :method => :post do
-  = label :new_account, :first_name, 'First name'
-  = text_field :new_account, 'first_name', required:true
-  %br
-  = label :new_account, :last_name, 'Last name'
-  = text_field :new_account, 'last_name', required:true
-  %br
-  = label :new_account, :email, 'E-mail'
-  = text_field :new_account, 'email', required:true
-  %br
-  = label :new_account, :username, 'Username'
-  = text_field :new_account, 'username', required:true
-  %br
-  = label :new_account, :password, 'Password'
-  = password_field :new_account, 'password', required:true
-  %br
-  = label :new_account, :confirm_password, 'Confirm Password'
-  = password_field :new_account, 'confirm_password', required:true
-  %br
-  = submit_tag 'Sign up'
+%div#sign_up_home_page
+  = form_tag sign_up_path, :id=>'sign_up_form', :method => :post do
+    = label :new_account, :first_name, 'First name'
+    = text_field :new_account, 'first_name', required:true
+    %br
+    = label :new_account, :last_name, 'Last name'
+    = text_field :new_account, 'last_name', required:true
+    %br
+    = label :new_account, :email, 'E-mail'
+    = text_field :new_account, 'email', required:true, :type => 'email'
+    %br
+    = label :new_account, :username, 'Username'
+    = text_field :new_account, 'username', required:true
+    %br
+    = label :new_account, :password, 'Password'
+    = password_field :new_account, 'password', required:true
+    %br
+    = label :new_account, :confirm_password, 'Confirm Password'
+    = password_field :new_account, 'confirm_password', required:true
+    %br
+    = submit_tag 'Sign up'

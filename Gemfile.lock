@@ -39,9 +39,15 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     arel (6.0.4)
+    autoprefixer-rails (8.4.1)
+      execjs
     backports (3.11.1)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
+    bootstrap (4.0.0)
+      autoprefixer-rails (>= 6.0.3)
+      popper_js (>= 1.12.9, < 2)
+      sass (>= 3.5.2)
     builder (3.2.3)
     byebug (10.0.2)
     capybara (2.18.0)
@@ -121,6 +127,7 @@ GEM
     multi_test (0.1.2)
     nokogiri (1.8.2-x64-mingw32)
       mini_portile2 (~> 2.3.0)
+    popper_js (1.12.9)
     public_suffix (3.0.2)
     rack (1.6.9)
     rack-test (0.6.3)
@@ -201,6 +208,7 @@ PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
+  bootstrap (~> 4.0.0.alpha6)
   byebug
   coffee-rails (~> 4.1.0)
   cucumber-rails

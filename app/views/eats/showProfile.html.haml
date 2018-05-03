@@ -1,0 +1,55 @@
+%div
+  %div{:align => 'left', :class => 'dashboard_header'}
+    = @account.first_name
+    = @account.last_name
+  %div{:align => 'right', :class => 'dashboard_header'}
+    = link_to 'Home', eats_wall_path
+    |
+    = link_to 'Notifications'
+    |
+    = link_to "#{session[:account]['first_name']} #{session[:account]['last_name']}", showProfile_path(session[:account]["id"])
+    |
+    = link_to 'Log out', log_out_path
+
+%nav.nav_bar
+  %div
+    %h6 Groups
+    - @groups.each do |group|
+      = link_to "#{group.name}", show_group_profile_path(group.id)
+      %br
+    %hr{:style=>"width:90%"}
+
+%div{:id => 'calendar'}
+  %div{:id =>'c_view'}
+  
+:javascript
+  $(document).ready( function() {
+    var day = new Date();
+    day = day.getMonth()+1 + "-" + day.getDate() + "-" + day.getFullYear();
+    $('#c_view').load('/load_calendar/month/'+day+'/#{@account.id}');
+  } );
+  
+
+-# %div
+  -# %table
+    -# %thead
+      -# %tr
+        -# %th Title
+        -# %th Start
+        -# %th End
+        -# %th Description
+        -# %th Tags
+    -# %tbody
+    -# @all_events.each do |event|
+      -# %tr
+        -# %td
+          -#  event.title
+        -# %td
+          -#  event.start
+        -# %td
+          -#  event.end
+        -# %td
+          -#  event.description
+        -# %td
+          -# event.tags.each do |id, name|
+            -#  link_to "#{name}", showProfile_path(id)

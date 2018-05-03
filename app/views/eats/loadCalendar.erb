@@ -1,0 +1,243 @@
+<script>
+	function loadMonthView(){
+		$('#c_view').load('/load_calendar/month/<%= @date.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+	}
+	
+	function loadWeekView(){
+		$('#c_view').load('/load_calendar/week/<%= @date.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+	}
+	function loadDayView(){
+		$('#c_view').load('/load_calendar/day/<%= @date.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+	}
+	
+	function loadDayCalendar(a){
+		date = a.getAttribute("data_date");
+		$('#c_view').load("/load_calendar/day/"+date+"/<%= @id_list %>");
+	}
+	
+	function previous(){
+		<% if params[:view_type] == "month" %>
+			$('#c_view').load('/load_calendar/month/<%= @date.last_month.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% elsif params[:view_type] == "week"%>
+			$('#c_view').load('/load_calendar/week/<%= @date.last_week.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% elsif params[:view_type] == "day"%>
+			$('#c_view').load('/load_calendar/day/<%= @date.yesterday.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% end %>
+	}
+	
+	function next(){
+		<% if params[:view_type] == "month" %>
+			$('#c_view').load('/load_calendar/month/<%= @date.next_month.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% elsif params[:view_type] == "week"%>
+			$('#c_view').load('/load_calendar/week/<%= @date.next_week.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% elsif params[:view_type] == "day"%>
+			$('#c_view').load('/load_calendar/day/<%= @date.tomorrow.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% end %>
+	}
+	
+</script>
+<div align="right">
+    <button onclick="previous()"> < </button>
+    <button onclick="loadMonthView()"> Month </button>
+    <button onclick="loadWeekView()"> Week </button>
+    <button onclick="loadDayView()"> Day </button>
+	<button onclick="next()"> > </button>
+</div
+
+<div>
+	<% if params[:view_type] == "month" %>
+		<h3 align="center"><%= @date.strftime("%B %Y") %> </h3>
+	<% elsif params[:view_type] == "week"%>
+		<h3 align="center"><%= (@date.beginning_of_week-1).strftime("%B %d, %Y") + " - " + (@date.end_of_week-1).strftime("%B %d, %Y")%></h3>
+	<% elsif params[:view_type] == "day"%>
+		<h3 align="center"><%= @date.strftime("%B %d, %Y") %></h3>
+	<% end %>
+</div>
+<div align="center" class="calendar_view" id = "calendar_view">
+	<% if params[:view_type] == "month" %>
+		<table style="table-layout:fixed;" id="calendar_month">
+				<tr>
+					<% ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].each{ |week_day| %>
+						<th style ="border:1px solid black;width:14.28571%"><div align="center" ><%= week_day %></div></th>
+					<% } %>
+				</tr>
+				<% for i in 0..((((@date.beginning_of_month).wday-1+(@date.end_of_month).day)/7.0).floor) %>
+					<tr><td colspan="7" style = "border:1px solid black;vertical-align:top;">
+						<table style="height:101px;width:100.2%;table-layout:fixed;vertical-align:top;" id="month_view_week_<%= i %>">
+						<tr style="vertical-align:top;">
+							<% for j in 0..6 %>
+								<td class="calendar_month_cell_header">
+								<% if (i==0 and (j<(@date.beginning_of_month).wday) or ((i*7)+j-(@date.beginning_of_month).wday+1)>@date.end_of_month.day )%>
+								<% else %>
+									<a data_date="<%= @date.strftime("%m-") + ((i*7)+j-(@date.beginning_of_month).wday+1).to_s + @date.strftime("-%Y")%>" onclick="loadDayCalendar(this)" ><%= ((i*7)+j-(@date.beginning_of_month).wday+1) %></a>
+								<% end %>
+								</td>
+							<% end %>
+						</tr>
+						</table>
+					</td></tr>
+				<% end %>
+		</table>
+	<% elsif params[:view_type] == "week"%>
+		<table style="table-layout:fixed;">
+			<tr>
+			<td></td>
+			<% for i in 0...24 %>
+				<td style="border:1px solid black;"><%= (i<10)?("0"+i.to_s):(i.to_s) %>:00</td>
+			<% end %>
+			</tr>
+			<% calendar_week_day = 0 %>
+			<% ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].each{ |week_day| %>
+				<tr style="border:1px solid black;height:80px;">
+				<td><div><%= week_day %><br><%= ((@date.beginning_of_week)+calendar_week_day-1).strftime("%B %d, %Y")%></div></td>
+				<td colspan="24" style="vertical-align:top;">
+					<table style="table-layout:fixed;width:100%;" id="calendar_week_day_<%= calendar_week_day %>">
+					</table>
+				</td>
+				</tr>
+			<% calendar_week_day = calendar_week_day + 1 %>
+			<% } %>
+			<tr style="border:1px solid black;height:80px;">
+			<td><div>Whole week</div></td>
+			<td colspan="24" style="vertical-align:top;">
+				<table style="table-layout:fixed;width:100%;" id="calendar_week_day_whole">
+				</table>
+			</td>
+			</tr>
+		</table>
+	<% elsif params[:view_type] == "day"%>
+		<table id="calendar_day" style="border:1px solid black;">
+			<tr>
+			<% for i in 0...24 %>
+				<td style="border:1px solid black;"><%= (i<10)?("0"+i.to_s):(i.to_s) %>:00</td>
+			<% end %>
+			</tr>
+		</table>
+	<% end %>
+</div>
+<script>
+	//alert(<%= ((((@date.beginning_of_month).wday+(@date.end_of_month).day)/7.0).ceil) %>)
+	//-((((@date.beginning_of_month).wday+(@date.end_of_month).day)/7)%1)
+	<% if params[:view_type] == "month" %>
+		<% @events.each{ |name, events| %>
+			<% events.each{ |event| %>
+				<% start_day = (event.start<@date.beginning_of_month)?(@date.beginning_of_month):(event.start) %>
+				<% end_day = (event.end>@date.end_of_month)?(@date.end_of_month):(event.end) %>
+				<% start_week = (((start_day.beginning_of_month).wday-1+start_day.day)/7.0).floor %>;
+				<% end_week = (((event.end.beginning_of_month).wday-1+end_day.day)/7.0).floor %>;
+<% "#{event.title}, start_week=#{start_week}, end_week=#{end_week}, start_day=#{start_day}, end_day=#{end_day}" %>
+				<% for j in start_week..end_week %>
+					var new_row = document.getElementById("month_view_week_<%= j %>").insertRow();
+					var inner_html = "";
+					<% start_day_week = (j>start_week)?(0):(start_day.wday) %>
+					<% colspan = ( start_week==end_week ? ((end_day.wday-start_day.wday)+1) : ( ( (j==start_week)?(7-start_day_week):( (j==end_week)?(end_day.wday+1):(7) ) ) ) ) %>
+<% "start_day_week = #{start_day_week}, colspan = #{colspan} #{end_day.wday-start_day.wday}" %>
+					<% for i in 0...start_day_week %>inner_html += '<td class="calendar_month_cell_empty"></td>';<% end %>
+					var event_class = "<%= ( (end_week==start_week)?(" radius_both"):( (j==start_week)?( (start_day>event.start)?(""):(" radius_left") ):( (j==end_week)?( (end_day<event.end)?(""):(" radius_right") ):("") ) ) ) %>";
+					inner_html += "<td class='calendar_month_cell_empty' style= 'padding-top:2px;padding-bottom:2px;' colspan='<%= colspan %>' align = 'center'>" + "<div class='calendar_month_event" + event_class + "'><a href='/event/<%= event.id %>'><%= event.title %></a></div>" + "</td>";
+					<% for i in 0...(7-(start_day_week+colspan)) %>inner_html += '<td class="calendar_month_cell_empty"></td>';<% end %>
+					new_row.innerHTML = inner_html;
+				<% end %>
+			<% } %>
+		<% } %>
+		
+		for(var i = 0; i < document.getElementById("calendar_month").rows.length-1; i++){
+			var table = document.getElementById("month_view_week_"+i);
+			//alert(table + " " + i);
+			while(table.rows.length < 5){
+				var new_row = table.insertRow();
+				var inner_html = "";
+				for(var j = 0; j < 7; j++){
+					inner_html += "<td class='calendar_month_cell_empty'></td>"
+				}
+				new_row.innerHTML = inner_html;
+			}
+		}
+	<% elsif params[:view_type] == "week" %>
+		<% @events.each{ |name, events| %>
+			<% events.each{ |event| %>
+				<% start_day = (event.start<@date.beginning_of_week)?(@date.beginning_of_week-1):(event.start) %>
+				<% end_day = (event.end>@date.end_of_week)?(@date.end_of_week-1):(event.end) %>
+				<% start_wday = start_day.wday %>
+				<% end_wday = end_day.wday %>
+<% "#{event.title}, start_wday=#{start_wday}, end_wday=#{end_wday}, start_day=#{start_day}, end_day=#{end_day}" %>
+				//alert("<%= event.title %> : <%= event.start<=@date.beginning_of_week-1 %>, <%= event.end>=@date.end_of_week-1 %>");
+				<% is_whole_week = ((event.start<=@date.beginning_of_week-1) and (event.end>=@date.end_of_week-1)) %>
+				<% if is_whole_week%>
+					var new_row = document.getElementById("calendar_week_day_whole").insertRow();
+					new_row.innerHTML = "<td class='calendar_month_cell_empty'><div align='center' class = 'calendar_month_event radius_both'><a href='/event/<%= event.id %>'><%= event.title %></a></div></td>"
+				<% else %>
+					<% for j in start_wday..end_wday %>
+						var new_row = document.getElementById("calendar_week_day_<%= j %>").insertRow();
+						<% start_hour_day = (j>start_wday)?(0):(start_day.hour) %>
+						<% colspan = ( (start_wday==end_wday)?(end_day.hour-start_day.hour):( (j==start_wday)?(24-start_day.hour):( (j==end_wday)?(end_day.hour+1):(24) ) ) ) %>
+						var inner_html = "";
+						<% for i in 0...start_hour_day %>
+							inner_html += "<td class='calendar_month_cell_empty'></td>"
+						<% end %>
+						var event_class = "<%= ( (end_wday==start_wday)?(" radius_both"):( (j==start_wday)?(" radius_left"):( (j==end_wday)?(" radius_right"):("") ) ) ) %>";
+						inner_html += "<td colspan='<%= colspan %>' style= 'padding-top:2px;padding-bottom:2px;' align='center' class= 'calendar_month_cell_empty'><div class='calendar_month_event" + event_class + "'><a href='/event/<%= event.id %>'><%= event.title %></a></div></td>"
+						<% for i in 0...(24-(start_hour_day+colspan)) %>
+							inner_html += "<td class='calendar_month_cell_empty'></td>"
+						<% end %>
+						new_row.innerHTML = inner_html;
+					<% end %>
+				<% end%>
+			<% } %>
+		<% } %>
+		for(var i = 0; i < 8; i++){
+			if(i == 7){
+				var table = document.getElementById("calendar_week_day_whole");
+				if(table.rows.length < 3){
+					var new_row = table.insertRow();
+					var inner_html = "<td class='calendar_month_cell_empty' style='height:25.56px;'></td>"
+					new_row.innerHTML = inner_html;
+				}
+			}else{
+				var table = document.getElementById("calendar_week_day_"+i);
+				if(table.rows.length < 3){
+					while(table.rows.length < 3){
+						//alert(table.id + ": " + table.rows.length);
+						var new_row = table.insertRow();
+						var inner_html = "";
+						for(var j = 0; j < 24; j++){
+							inner_html += "<td class='calendar_month_cell_empty' style='height:25.56px;'></td>"
+						}
+						new_row.innerHTML = inner_html;
+					}
+				}
+			}
+		}
+	<% elsif params[:view_type] == "day"%>
+		<% @events.each{ |name, events| %>
+			<% events.each{ |event| %>
+				var new_row = document.getElementById("calendar_day").insertRow();
+				<% start_hour = ( (event.start<=@date.beginning_of_day)?(0):(event.start.hour) )%>
+				<% colspan = ( (event.end>=@date.end_of_day)?(24-start_hour):(event.end.hour+( event.end.min>30?1:0 )-start_hour) ) %>
+				var inner_html = "";
+				<% for i in 0...start_hour %>
+					inner_html += "<td class='calendar_month_cell_empty'></td>"
+				<% end %>
+				var event_class = "<%= ( ((event.start<@date.beginning_of_day) and (event.end>@date.end_of_day))?(""):( (event.start<@date.beginning_of_day)?(" radius_right"):( (event.end>@date.end_of_day)?(" radius_left"):(" radius_both") ) ) ) %>";
+				inner_html += "<td colspan='<%= colspan %>' style= 'padding-top:2px;padding-bottom:2px;' align='center' class='calendar_month_cell_empty'><div class='calendar_month_event" + event_class + "'><a href='/event/<%= event.id %>'><%= event.title %></a></div></td>"
+				<% for i in 0...(24-(start_hour+colspan)) %>
+					inner_html += "<td class='calendar_month_cell_empty'></td>"
+				<% end %>
+				new_row.innerHTML = inner_html;
+				new_row.class = "calendar_month_cell_empty";
+			<% } %>
+		<% } %>
+		var table = document.getElementById("calendar_day");
+		if(table.rows.length<3){
+			while(table.rows.length < 4){
+				//alert(table.id + ": " + table.rows.length);
+				var new_row = table.insertRow();
+				var inner_html = "";
+				for(var j = 0; j < 24; j++){
+					inner_html += "<td class='calendar_month_cell_empty' style='height:25.56px;'></td>"
+				}
+				new_row.innerHTML = inner_html;
+			}
+		}
+	<% end %>
+</script>

@@ -1,0 +1,31 @@
+<% @events.each do |name, user| %>
+<div style="border:3px solid rgb(221,221,221);">
+<text> <%= name %>
+<table>
+	<thead>
+		<tr>
+			<th> Title </th>
+			<th> Start </th>
+			<th> End </th>
+			<th> Description </th>
+			<th> Tags </th>
+		</tr>
+	</thead>
+	<tbody>
+		<% user.each do |event| %>
+		<tr>
+			<td><%= event.title %></td>
+			<td><%= event.start %></td>
+			<td><%= event.end %></td>
+			<td><%= event.description %></td>
+			<td>
+			<% event.tags.each { |id, name| %>
+				<a href="/profile/<%= id %>"><%= name %></a>
+			<% } %>
+			</td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
+</div>
+<% end %>

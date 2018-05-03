@@ -1,0 +1,12 @@
+<div>
+    <button onclick="previous()"> < </button>
+    <button action="<%= showProfileRender_path(@account.id, "month", DateTime.now.strftime("%m-%d-%Y")) %>"> Month </button>
+    <button onclick="loadWeekView()"> Week </button>
+    <button onclick="loadDayView()"> Day </button>
+	<button onclick="next()"> > </button>
+</div>
+<script>
+<% @events_to_calendar.each{ |event| %>
+	alert("<%= event.title %>");
+<% } %>
+</script>

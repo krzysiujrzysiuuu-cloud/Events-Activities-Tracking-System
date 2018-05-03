@@ -1,0 +1,9 @@
+ <option value = "null">--</option>
+ <% @suggestions.each{ |account| %>
+ <option type="account" value = "<%= account.id %>"><%= account.first_name %> <%= account.last_name %></option>
+ <% } %>
+ <% if @with_group %>
+	<% @group_suggestions.each{ |group| %>
+	<option value = "group_<%= group.id %>"><%= group.name %></option>
+	<% } %>
+  <% end %>

@@ -1,0 +1,13 @@
+<input type="text" id="search_ids" value="<%= @yield %>" style="display:none"/>
+<% @tags.each{ |account| %>
+<div class="add_event_tag-element"><%= link_to "#{account.first_name}", showProfile_path(account.id) %> <span class="add_event_tag-remove" onclick = "removeFromSearchList(this.id)" id = "<%= account.id %>">×</span></div>
+<% } %>
+<% @group_tags.each{ |group| %>
+<div class="add_event_tag-element"><%= link_to "#{group.name}", show_group_profile_path(group.id) %> <span class="add_event_tag-remove" onclick = "removeFromSearchList(this.id)" id = "<%= "group_"+group.id.to_s %>">×</span></div>
+<% } %>
+<script>
+	//$('#searched_schedules').load('/searchSchedules/'+document.getElementById('search_ids').value);
+	var day = new Date();
+    day = day.getMonth()+1 + "-" + day.getDate() + "-" + day.getFullYear();
+	$('#c_view').load('/load_calendar/month/'+day+'/'+document.getElementById('search_ids').value);
+</script>

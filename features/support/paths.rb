@@ -16,7 +16,7 @@ module NavigationHelpers
     when /^the home\s?page$/
       '/'
 	when /^the main\s?page$/
-	  eats_wall_path
+      '/events'
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #

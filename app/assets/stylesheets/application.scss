@@ -1,0 +1,197 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ */
+ @import "bootstrap";
+ 
+ $black: rgb(0,0,0);
+$black_40: rgba(0,0,0,0.4);
+$color_romance_approx: #fefefe;
+$color_suva_gray_approx: #888;
+$color_silver_chalice_approx: #aaa;
+
+//@extend-elements
+//original selectors
+//.add_event_form-close:hover, .add_event_form-close:focus
+%extend_1 {
+	color: $black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+html, body{
+	height:100%;
+}
+
+.dashboard_header {
+	float: left;
+	width: 50%;
+}
+
+.add_event_label {
+	display: inline-block;
+	width: 150px;
+	vertical-align:top;
+}
+
+.add_event_tags {
+	display: inline-block;
+	width: 150px;
+}
+
+.nav_bar {
+	float: left;
+	position: relative;
+	max-width: 200px;
+	min-width: 200px;
+	height: 96vh;
+	background: $gray-500;
+}
+
+.add_event_form-div {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: $black;
+	background-color: $black_40;
+}
+.add_event_form-content {
+	background-color: $color_romance_approx;
+	margin: 15% auto;
+	padding: 20px;
+	border: 1px solid $color_suva_gray_approx;
+	width: 50%;
+}
+.add_event_form-close {
+	color: $color_silver_chalice_approx;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	&:hover {
+		@extend %extend_1;
+	}
+	&:focus {
+		@extend %extend_1;
+	}
+}
+
+.add_event_tag-remove {
+	color: $color_silver_chalice_approx;
+	font-size: 20px;
+	font-weight: bold;
+	&:hover {
+		@extend %extend_1;
+	}
+	&:focus {
+		@extend %extend_1;
+	}
+}
+.add_event_tag-element {
+	display:inline-block;
+	border: 1px solid $color_suva_gray_approx;
+	&:hover {
+		@extend %extend_1;
+	}
+	&:focus {
+		@extend %extend_1;
+	}
+}
+
+.calendar_month {
+	min-width:95px;
+	vertical-align:top;
+}
+
+.calendar_month_cell{
+	height:80px;
+	border:1px solid $black_40;
+	max-width:95px;
+}
+
+.calendar_week_cell{
+	height:5px;
+	border:1px solid $black_40;
+	max-width:95px;
+}
+.calendar_week_header{
+	height:20px;
+	border:1px solid $black_40;
+	max-width:95px;
+}
+.calendar_day_cell{
+	min-width:360px;
+	border:1px solid $black_40;
+	max-width:95px;
+}
+.month_event{
+	z-index:2;
+}
+.week_event{
+	z-index:2;
+}
+.day_event{
+	z-index:2;
+}
+
+.calendar_month_cell_header{
+	border-top:1px solid black;
+	border-left:1px solid black;
+	border-right:1px solid black;
+}
+
+.calendar_view{
+	height:560px;
+	overflow-y:auto;
+}
+
+.calendar_month_cell_empty{
+	border-left:1px solid black;
+	border-right:1px solid black;
+}
+
+.calendar_month_event{
+	background:gray;
+}
+
+.calendar_month_event a{
+	color:white;
+}
+
+.radius_left{
+	border-top-left-radius:	  20px;
+	border-bottom-left-radius:20px;
+}
+.radius_right{
+	border-top-right-radius:   20px;
+	border-bottom-right-radius:20px;
+}
+.radius_both{
+	border-top-left-radius:    20px;
+	border-top-right-radius:   20px;
+	border-bottom-right-radius:20px;
+	border-bottom-left-radius: 20px;
+}
+
+.log_in_home_page{
+	line-height: 2;
+	background-color: $color_suva_gray_approx;
+	min-height: 40px;
+}
+
+.sign_up_home_page{
+
+}

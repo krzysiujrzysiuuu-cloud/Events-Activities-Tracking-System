@@ -1,0 +1,37 @@
+Edit event
+%br
+= form_tag update_event_path(@event.id), :id => 'edit_event_form', :method => :put do
+  = hidden_field_tag :edit_event_is_group_event, false, :value => "#{@event.is_group_event}"
+  = hidden_field_tag :edit_event_group_id, :value => "#{@event.group_id}"
+  = label :edit_event, :title, 'Title', :class => 'add_event_label'
+  = text_field :edit_event, 'title', required:true, :value => "#{@event.title}"
+  %br
+  = label :edit_event, :tags, 'Tags', :class => 'add_event_label'
+  %div.add_event_tags
+    = text_field :edit_event, :tags_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off'
+    %select{:id => 'edit_tag_suggestion_list', :onchange => 'editTagListChange(this)'}
+      %option{:value => 'null'}
+        = "--"
+    %div{:id => 'edit_tags_list'}
+      = text_field :edit_event, :tags, :style => 'display:none'
+  %br
+  = label :edit_event, :start_date, 'Start Date', :class => 'add_event_label'
+  = date_field :edit_event, 'start_date', required:true, :value => "#{@event.start.strftime('%Y-%m-%d')}"
+  = time_field :edit_event, 'start_time', :value =>"#{@event.start.strftime('%H:%M')}"
+  %br
+  = label :edit_event, :end_date, 'End Date', :class => 'add_event_label'
+  = date_field :edit_event, 'end_date', required:true, :value => "#{@event.end.strftime('%Y-%m-%d')}"
+  = time_field :edit_event, 'end_time', :value =>"#{@event.end.strftime('%H:%M')}"
+  %br
+  = label :edit_event, :description, 'Description', :class => 'add_event_label'
+  = text_field :edit_event, 'description', required:true, :value => "#{@event.description}"
+  %br
+  = label :edit_event, '', :class => 'add_event_label'
+  %input{:checked => "checked", :name => "edit_event[public]", :type => "radio", :value => "1"}Public
+  %input{:name => "edit_event[public]", :type => "radio", :value => "0"}Private
+  %br
+  = submit_tag 'Save changes'
+  
+:javascript
+  var list = "#{@tagsList}";
+  $('#edit_tags_list').load('/editAddTag/'+list);

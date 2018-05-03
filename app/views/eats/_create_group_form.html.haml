@@ -1,0 +1,15 @@
+%div
+  %h6 Create Group
+  = form_tag create_group_path, :id => 'create_group_form', :method => :post do
+    = label :new_group, :name, 'Name', :class => 'add_event_label'
+    = text_field :new_group, 'name', required:true
+    %br
+    = label :new_group, :members, 'Add member', :class => 'add_event_label'
+    = text_field :new_group, :add_members_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off'
+    %select{:id => 'add_member_suggestion_list', :onchange => 'addMemberListChange(this)'}
+      %option{:value => 'null'}
+        = "--"
+    %div{:id => 'add_members_list'}
+      = text_field :new_group, :members, :style => 'display:none'
+    %br
+    = submit_tag 'Create Group'

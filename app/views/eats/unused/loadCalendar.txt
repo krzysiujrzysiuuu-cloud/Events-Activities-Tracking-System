@@ -1,0 +1,209 @@
+<script>
+	function loadMonthView(){
+		$('#c_view').load('/load_calendar/month/<%= @date.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+	}
+	
+	function loadWeekView(){
+		$('#c_view').load('/load_calendar/week/<%= @date.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+	}
+	function loadDayView(){
+		$('#c_view').load('/load_calendar/day/<%= @date.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+	}
+	
+	function previous(){
+		<% if params[:view_type] == "month" %>
+			$('#c_view').load('/load_calendar/month/<%= @date.last_month.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% elsif params[:view_type] == "week"%>
+			$('#c_view').load('/load_calendar/week/<%= @date.last_week.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% elsif params[:view_type] == "day"%>
+			$('#c_view').load('/load_calendar/day/<%= @date.yesterday.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% end %>
+	}
+	
+	function next(){
+		<% if params[:view_type] == "month" %>
+			$('#c_view').load('/load_calendar/month/<%= @date.next_month.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% elsif params[:view_type] == "week"%>
+			$('#c_view').load('/load_calendar/week/<%= @date.next_week.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% elsif params[:view_type] == "day"%>
+			$('#c_view').load('/load_calendar/day/<%= @date.tomorrow.strftime("%m-%d-%Y")%>/<%= params[:ids]%>');
+		<% end %>
+	}
+	
+</script>
+<div>
+    <button onclick="previous()"> < </button>
+    <button onclick="loadMonthView()"> Month </button>
+    <button onclick="loadWeekView()"> Week </button>
+    <button onclick="loadDayView()"> Day </button>
+	<button onclick="next()"> > </button>
+</div
+
+<div>
+	<% if params[:view_type] == "month" %>
+		<text><%= @date.strftime("%B %Y") %> </text>
+	<% elsif params[:view_type] == "week"%>
+		<text><%= @date.strftime("%B %Y")%></text>
+	<% elsif params[:view_type] == "day"%>
+		<text><%= @date.strftime("%B %d, %Y")%></text>
+	<% end %>
+</div>
+<div>
+	<% if params[:view_type] == "month" %>
+		<table>
+			<thead>
+			<% ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].each{ |weekday| %>
+				<th class = "calendar_month"><%= weekday %></th>
+			<% } %>
+			</thead>
+		</table>
+	<% elsif params[:view_type] == "week"%>
+		<table>
+			<thead>
+			<th class ="calendar_month"><th>
+			<% ["Sunday", "Monday","Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].each{ |weekday| %>
+				<th class = "calendar_month"><%= weekday %></th>
+			<% } %>
+			</thead>
+		</table>
+	<% end %>
+	
+	
+	<% if params[:view_type] == "month" %>
+		<table id="calendar_view_month">
+			<% 6.times{%>
+				<tr>
+				<% 7.times{ %>
+					<td class ="calendar_month calendar_month_cell" ></td>
+				<% }%>
+				</tr>
+			<% }%>
+		</table>
+	<% elsif params[:view_type] == "week"%>
+		<table id="calendar_view_week">
+			<tr>
+			<% 8.times{ %>
+				<td class ="calendar_month calendar_week_header" ></td>
+			<% }%>
+			</tr>
+			<% for i in 0..24 do %>
+				<tr>
+				<td class ="calendar_month calendar_week_cell"><%= i<10?"0"+(i.to_s):i %>:00 </td>
+				<% 7.times { %>
+					<td class ="calendar_month calendar_week_cell"></td>
+				<% } %>
+				</tr>
+			<% end %>
+		</table>
+	<% elsif params[:view_type] == "day"%>
+		<table id="calendar_view_day">
+			<% for i in 0..24 do %>
+				<tr>
+				<td class ="calendar_month calendar_week_cell"><%= i<10?"0"+(i.to_s):i %>:00 </td>
+				<td class ="calendar_month calendar_day_cell"></td>
+				</tr>
+			<% end %>
+		</table>
+	<% end %>
+	
+</div>
+
+<script>
+	function loadDayCalendar(a){
+		date = a.getAttribute("data_date");
+		$('#c_view').load("/load_calendar/day/"+date+"/<%= @id_list %>");
+	}
+	<% if params[:view_type] == "month" %>
+		var calendar_month_table = document.getElementById("calendar_view_month");
+		var start_month = new Date(<%= @date.strftime("%Y") %>, <%= @date.strftime("%m") %>-1, 1);
+		var end_month = new Date(<%= @date.strftime("%Y") %>, <%= @date.strftime("%m") %>, 0);
+		var num_of_days = end_month.getDate();
+		for(var i = 0; i < num_of_days; i++){
+			var row_num = Math.floor((start_month.getDay()+i)/7);
+			var col_num = (start_month.getDay()+i)%7;
+			var height = calendar_month_table.rows[row_num].cells[col_num].offsetHeight;
+			height = (height/2)-12;
+			var content = '<a data_date = "<%= @date.strftime("%m-") %>' + (i<10?("0"+(i+1)):(i+1)) + '<%= @date.strftime("-%Y")%>" onclick="loadDayCalendar(this)" style="position:relative;">' + (i+1) + '</a><div id = "<%= @date.strftime("%m-") %>' + (i<10?("0"+(i+1)):(i+1)) + '<%= @date.strftime("-%Y")%>" ev_count="0" class="month_event"></div>';
+			calendar_month_table.rows[row_num].cells[col_num].innerHTML = content;
+			//calendar_month_table.rows[row_num].cells[col_num].setAttribute("valign", "top");
+		}
+		calendar_month_table.setAttribute("style", "table-layout:fixed;");
+	<% elsif params[:view_type] == "week"%>
+		var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		var calendar_week_table = document.getElementById("calendar_view_week");
+		var week_first_day = new Date("<%= (@date.beginning_of_week-1).strftime("%m-%d-%Y") %>");
+		<% for j in 0...7 do %>
+			i = <%= j%>
+			var week_day = new Date(week_first_day.getFullYear(), (week_first_day.getMonth()), (week_first_day.getDate()+i));
+			calendar_week_table.rows[0].cells[i+1].innerHTML = '<a data_date = "<%= ((@date.beginning_of_week-1)+j).strftime("%m-%d-%Y")%>" onclick="loadDayCalendar(this)" style="position:relative;">'+ months[week_day.getMonth()] + ' ' + week_day.getDate() + '</a>';
+		<% end %>
+		<% for i in 0..24 do %>
+			<% for j in 0...7 do %>
+				calendar_week_table.rows[<%= i %>+1].cells[<%= j %>+1].innerHTML = '<div id ="<%= ((@date.beginning_of_week-1)+j).strftime("%m-%d-%Y") %>:<%= i<10?"0"+(i.to_s):i %>:00" ev_count="0" class="week_event"></div>'
+				//calendar_week_table.rows[<%= i %>+1].cells[<%= j %>+1].setAttribute("valign", "top");
+				//calendar_week_table.rows[<%= i %>+1].cells[<%= j %>+1].setAttribute("data-date", "<%= ((@date.beginning_of_week-1)+j).strftime("%m-%d-%Y") %>:<%= i<10?"0"+(i.to_s):i %>:00");
+			<% end %>
+		<% end %>
+		calendar_week_table.setAttribute("style", "table-layout:fixed;");
+	<% elsif params[:view_type] == "day"%>
+		var calendar_day_table = document.getElementById("calendar_view_day");
+		<% for i in 0..24 do %>
+			calendar_day_table.rows[<%= i %>].cells[1].innerHTML = '<div id ="<%= @date.strftime("%m-%d-%Y") %>:<%= i<10?"0"+(i.to_s):i %>:00" ev_count="0" class="day_event"></div>'
+			//calendar_day_table.rows[<%= i %>].cells[1].setAttribute("valign", "top");
+			//calendar_day_table.rows[<%= i %>].cells[1].setAttribute("data-date", "<%= @date.strftime("%m-%d-%Y") %>:<%= i %>:00");
+		<% end %>
+		calendar_day_table.setAttribute("style", "table-layout:fixed;");
+	<% end %>
+	
+	<% if params[:view_type] == "month" %>
+		<% @events.each{ |name, events|%>
+			<% events.each{ |event|%>
+				var event_count = parseInt(document.getElementById("<%= event.start.strftime("%m-%d-%Y") %>").getAttribute("ev_count"));
+				<% puts "#{event.title} #{event.start.strftime("%m-%d-%Y")}" %>
+				if(event_count < 2){
+					if(document.getElementById("event_<%= event.id %>") == null){
+						document.getElementById("<%= event.start.strftime("%m-%d-%Y") %>").innerHTML = document.getElementById("<%= event.start.strftime("%m-%d-%Y") %>").innerHTML+'<div class="month_event" id="event_<%= event.id%>"><a href="/event/<%= event.id %>"><%= event.title %></a></div>';
+						event_count = event_count+1;
+						document.getElementById("<%= event.start.strftime("%m-%d-%Y") %>").setAttribute("ev_count", event_count);
+					}
+				}else if(event_count == 2){
+					if(document.getElementById("event_<%= event.id %>") == null){
+						document.getElementById("<%= event.start.strftime("%m-%d-%Y") %>").innerHTML = document.getElementById("<%= event.start.strftime("%m-%d-%Y") %>").innerHTML+'<div class="month_event"><a data_date = "<%= event.start.strftime("%m-%d-%Y")%>" onclick="loadDayCalendar(this)" style="position:relative;">more..</a></div>';
+						event_count = event_count+1;
+						document.getElementById("<%= event.start.strftime("%m-%d-%Y") %>").setAttribute("ev_count", event_count);
+					}
+				}
+			<% }%>
+		<% } %>
+	<% elsif params[:view_type] == "week"%>
+		<% @events.each{ |name, events|%>
+			<% events.each{ |event|%>
+				var event_count = parseInt(document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").getAttribute("ev_count"));
+				<% puts "#{event.title} #{event.start.strftime("%m-%d-%Y:%H:%M")}" %>
+				if(event_count < 2){
+					if(document.getElementById("event_<%= event.id %>") == null){
+						document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").innerHTML = document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").innerHTML+'<div class="month_event"><a href="/event/<%= event.id %>"><%= event.title %></a></div>';
+						event_count = event_count+1;
+					document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").setAttribute("ev_count", event_count);
+					}
+				}else if(event_count == 2){
+					if(document.getElementById("event_<%= event.id %>") == null){
+						document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").innerHTML = document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").innerHTML+'<div class="month_event"><a data_date = "<%= event.start.strftime("%m-%d-%Y")%>" onclick="loadDayCalendar(this)" style="position:relative;">more..</a></div>';
+						event_count = event_count+1;
+						document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").setAttribute("ev_count", event_count);
+					}
+				}
+			<% }%>
+		<% } %>
+	<% elsif params[:view_type] == "day"%>
+		<% @events.each{ |name, events|%>
+			<% events.each{ |event|%>
+				var event_count = parseInt(document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").getAttribute("ev_count"));
+				<% puts "#{event.title} #{event.start.strftime("%m-%d-%Y:%H:%M")}" %>
+				document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").innerHTML = document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").innerHTML+'<div class="month_event"><a href="/event/<%= event.id %>"><%= event.title %></a></div>';
+				event_count = event_count+1;
+				document.getElementById("<%= event.start.strftime("%m-%d-%Y:%H:%M") %>").setAttribute("ev_count", event_count);
+			<% }%>
+		<% } %>
+	<% end %>
+</script>

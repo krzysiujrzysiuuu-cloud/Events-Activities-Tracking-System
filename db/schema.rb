@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180405064954) do
+ActiveRecord::Schema.define(version: 20180427052415) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "first_name"
@@ -21,6 +21,49 @@ ActiveRecord::Schema.define(version: 20180405064954) do
     t.string   "password"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string   "title"
+    t.datetime "start"
+    t.datetime "end"
+    t.boolean  "public"
+    t.text     "description"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.integer  "creator"
+    t.boolean  "is_group_event", default: false
+    t.integer  "group_id"
+  end
+
+  add_index "events", ["creator"], name: "index_events_on_creator"
+
+  create_table "group_join_requests", id: false, force: :cascade do |t|
+    t.integer  "groups_id"
+    t.integer  "accounts_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "group_members", force: :cascade do |t|
+    t.integer  "accounts_id"
+    t.integer  "group_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.boolean  "is_admin"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "creator_id"
+    t.string   "creator_name"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.integer "events_id"
+    t.integer "accounts_id"
   end
 
 end

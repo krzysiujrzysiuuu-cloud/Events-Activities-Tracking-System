@@ -1,0 +1,4 @@
+<input type="text" name="new_event[tags]" id="new_event_tags" value="<%= @yield %>" style="display:none"/>
+<% @tags.each{ |account| %>
+<div class="add_event_tag-element"><%= account.first_name %> <span class="add_event_tag-remove" onclick = "removeFromTagList(this.id)" id = "<%= account.id %>">×</span></div>
+<% } %>

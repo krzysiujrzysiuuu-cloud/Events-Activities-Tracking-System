@@ -84,9 +84,16 @@ When /I fill in "Username" and "Password" with "([^"]*)" and "([^"]*)" inside th
 	end
 end
 
-When /I log in as "([^"]*)" with password "([^"]*)"/ do |username, password|
-	%{Given I am on the home page}
-	%{When I fill in "Username" and "Password" with "username" and "password" inside the "Log-in form"}
+Given /^(?:|I )am on (.+)$/ do |page_name|
+  visit path_to(page_name)
+end
+
+When /^(?:|I )go to (.+)$/ do |page_name|
+  visit path_to(page_name)
+end
+
+When /^(?:|I )press "([^"]*)"$/ do |button|
+  click_button(button)
 end
 
 # Single-line step scoper
@@ -99,17 +106,6 @@ When /^(.*) within (.*[^:]):$/ do |step, parent, table_or_string|
   with_scope(parent) { When "#{step}:", table_or_string }
 end
 
-Given /^(?:|I )am on (.+)$/ do |page_name|
-  visit path_to(page_name)
-end
-
-When /^(?:|I )go to (.+)$/ do |page_name|
-  visit path_to(page_name)
-end
-
-When /^(?:|I )press "([^"]*)"$/ do |button|
-  click_button(button)
-end
 
 When /^(?:|I )follow "([^"]*)"$/ do |link|
   click_link(link)

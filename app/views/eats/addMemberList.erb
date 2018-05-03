@@ -1,0 +1,4 @@
+<input type="text" name="new_group[members]" id="new_group_members" value="<%= @yield %>" style="display:none"/>
+<% @tags.each{ |account| %>
+<div class="add_event_tag-element"><%= account.first_name %> <span class="add_event_tag-remove" onclick = "removeFromAddMemberList(this.id)" id = "<%= account.id %>">×</span></div>
+<% } %>
