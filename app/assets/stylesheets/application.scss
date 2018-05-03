@@ -54,7 +54,7 @@ html, body{
 	max-width: 200px;
 	min-width: 200px;
 	height: 96vh;
-	background: $gray-500;
+	background: #B0C4DE;
 }
 
 .add_event_form-div {
@@ -152,10 +152,27 @@ html, body{
 	border-left:1px solid black;
 	border-right:1px solid black;
 }
+.calendar_month_cell_header a{
+	color: #222;
+	font-size: 16px;
+	font-weight: 600;
+	text-decoration: underline;
+    cursor: pointer;
+}
+
+.calendar_month_cell_header div:hover{
+	background-color: $color_suva_gray_approx;
+
+    text-decoration: none;
+}
 
 .calendar_view{
 	height:560px;
 	overflow-y:auto;
+	background: #04b6e2;
+	color: #fff;
+	border-radius: 5px;
+  box-shadow: 0px 2px 6px rgba(2,2,2,0.2);
 }
 
 .calendar_month_cell_empty{

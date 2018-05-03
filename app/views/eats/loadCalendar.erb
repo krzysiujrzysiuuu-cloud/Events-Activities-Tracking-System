@@ -69,7 +69,9 @@
 								<td class="calendar_month_cell_header">
 								<% if (i==0 and (j<(@date.beginning_of_month).wday) or ((i*7)+j-(@date.beginning_of_month).wday+1)>@date.end_of_month.day )%>
 								<% else %>
-									<a data_date="<%= @date.strftime("%m-") + ((i*7)+j-(@date.beginning_of_month).wday+1).to_s + @date.strftime("-%Y")%>" onclick="loadDayCalendar(this)" ><%= ((i*7)+j-(@date.beginning_of_month).wday+1) %></a>
+									<div  data_date="<%= @date.strftime("%m-") + ((i*7)+j-(@date.beginning_of_month).wday+1).to_s + @date.strftime("-%Y")%>" onclick="loadDayCalendar(this)" >
+									<a><%= ((i*7)+j-(@date.beginning_of_month).wday+1) %></a>
+									</div>
 								<% end %>
 								</td>
 							<% end %>
@@ -89,7 +91,7 @@
 			<% calendar_week_day = 0 %>
 			<% ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].each{ |week_day| %>
 				<tr style="border:1px solid black;height:80px;">
-				<td><div><%= week_day %><br><%= ((@date.beginning_of_week)+calendar_week_day-1).strftime("%B %d, %Y")%></div></td>
+				<td><div><a data_date="<%= ((@date.beginning_of_week)+calendar_week_day-1).strftime("%m-%d-%Y")%>" onclick="loadDayCalendar(this)"><%= week_day %><br><%= ((@date.beginning_of_week)+calendar_week_day-1).strftime("%B %d, %Y")%></a></div></td>
 				<td colspan="24" style="vertical-align:top;">
 					<table style="table-layout:fixed;width:100%;" id="calendar_week_day_<%= calendar_week_day %>">
 					</table>
