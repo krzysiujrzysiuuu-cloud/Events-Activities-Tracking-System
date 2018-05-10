@@ -118,37 +118,37 @@
 	<% end %>
 </div>
 <script>
-	<% colors = ["#007bff", "#dc3545", "#fd7e14", "#ffc107", "#28a745", "#6610f2", "#6f42c1", "#e83e8c", "#20c997", "#17a2b8", "#6c757d", "#343a40"]%>
-				//blue,      red,      orange,    yellow,    green,     indigo,    purple,    pink,      teal,      cyan,      gray,      gray-dark
+	//alert(<%= ((((@date.beginning_of_month).wday+(@date.end_of_month).day)/7.0).ceil) %>)
+	//-((((@date.beginning_of_month).wday+(@date.end_of_month).day)/7)%1)
 	<% if params[:view_type] == "month" %>
-		<% color_index = 0 %>
 		<% @events.each{ |name, events| %>
 			<% events.each{ |event| %>
 				<% start_day = (event.start<@date.beginning_of_month)?(@date.beginning_of_month):(event.start) %>
 				<% end_day = (event.end>@date.end_of_month)?(@date.end_of_month):(event.end) %>
 				<% start_week = (((start_day.beginning_of_month).wday-1+start_day.day)/7.0).floor %>;
-				<% end_week = (((end_day.beginning_of_month).wday-1+end_day.day)/7.0).floor %>;
-				//alert("<%= end_day %>, <%= end_week %>");
+				<% end_week = (((event.end.beginning_of_month).wday-1+end_day.day)/7.0).floor %>;
+<% "#{event.title}, start_week=#{start_week}, end_week=#{end_week}, start_day=#{start_day}, end_day=#{end_day}" %>
 				<% for j in start_week..end_week %>
 					var new_row = document.getElementById("month_view_week_<%= j %>").insertRow();
 					var inner_html = "";
 					<% start_day_week = (j>start_week)?(0):(start_day.wday) %>
 					<% colspan = ( start_week==end_week ? ((end_day.wday-start_day.wday)+1) : ( ( (j==start_week)?(7-start_day_week):( (j==end_week)?(end_day.wday+1):(7) ) ) ) ) %>
+<% "start_day_week = #{start_day_week}, colspan = #{colspan} #{end_day.wday-start_day.wday}" %>
 					<% for i in 0...start_day_week %>inner_html += '<td class="calendar_month_cell_empty"></td>';<% end %>
 					var event_class = "<%= ( (end_week==start_week)?(" radius_both"):( (j==start_week)?( (start_day>event.start)?(""):(" radius_left") ):( (j==end_week)?( (end_day<event.end)?(""):(" radius_right") ):("") ) ) ) %>";
-					inner_html += "<td class='calendar_month_cell_empty' style= 'padding-top:2px;padding-bottom:2px;' colspan='<%= colspan %>' align = 'center'>" + "<div style='background:<%= colors[color_index] %>' class='" + event_class + "'><a href='/event/<%= event.id %>' style='color:white'><%= event.title %></a></div>" + "</td>";
+					inner_html += "<td class='calendar_month_cell_empty' style= 'padding-top:2px;padding-bottom:2px;' colspan='<%= colspan %>' align = 'center'>" + "<div class='calendar_month_event" + event_class + "'><a href='/event/<%= event.id %>'><%= event.title %></a></div>" + "</td>";
 					<% for i in 0...(7-(start_day_week+colspan)) %>inner_html += '<td class="calendar_month_cell_empty"></td>';<% end %>
 					new_row.innerHTML = inner_html;
 				<% end %>
 			<% } %>
-			<% color_index = (color_index+1)%colors.length %>
 		<% } %>
+		
 		for(var i = 0; i < document.getElementById("calendar_month").rows.length-1; i++){
 			var table = document.getElementById("month_view_week_"+i);
 			//alert(table + " " + i);
 			while(table.rows.length < 5){
-				var inner_html = "";
 				var new_row = table.insertRow();
+				var inner_html = "";
 				for(var j = 0; j < 7; j++){
 					inner_html += "<td class='calendar_month_cell_empty'></td>"
 				}
@@ -156,7 +156,6 @@
 			}
 		}
 	<% elsif params[:view_type] == "week" %>
-		<% color_index = 0 %>
 		<% @events.each{ |name, events| %>
 			<% events.each{ |event| %>
 				<% start_day = (event.start<@date.beginning_of_week)?(@date.beginning_of_week-1):(event.start) %>
@@ -179,7 +178,7 @@
 							inner_html += "<td class='calendar_month_cell_empty'></td>"
 						<% end %>
 						var event_class = "<%= ( (end_wday==start_wday)?(" radius_both"):( (j==start_wday)?(" radius_left"):( (j==end_wday)?(" radius_right"):("") ) ) ) %>";
-						inner_html += "<td colspan='<%= colspan %>' style= 'padding-top:2px;padding-bottom:2px;' align='center' class= 'calendar_month_cell_empty'><div style='background:<%= colors[color_index] %>' class='" + event_class + "'><a style='color:white' href='/event/<%= event.id %>'><%= event.title %></a></div></td>"
+						inner_html += "<td colspan='<%= colspan %>' style= 'padding-top:2px;padding-bottom:2px;' align='center' class= 'calendar_month_cell_empty'><div class='calendar_month_event" + event_class + "'><a href='/event/<%= event.id %>'><%= event.title %></a></div></td>"
 						<% for i in 0...(24-(start_hour_day+colspan)) %>
 							inner_html += "<td class='calendar_month_cell_empty'></td>"
 						<% end %>
@@ -187,17 +186,14 @@
 					<% end %>
 				<% end%>
 			<% } %>
-			<% color_index = (color_index+1)%colors.length %>
 		<% } %>
 		for(var i = 0; i < 8; i++){
 			if(i == 7){
 				var table = document.getElementById("calendar_week_day_whole");
 				if(table.rows.length < 3){
-					while(table.rows.length < 3){
-						var new_row = table.insertRow();
-						var inner_html = "<td class='calendar_month_cell_empty' style='height:25.56px;'></td>"
-						new_row.innerHTML = inner_html;
-					}
+					var new_row = table.insertRow();
+					var inner_html = "<td class='calendar_month_cell_empty' style='height:25.56px;'></td>"
+					new_row.innerHTML = inner_html;
 				}
 			}else{
 				var table = document.getElementById("calendar_week_day_"+i);
@@ -215,7 +211,6 @@
 			}
 		}
 	<% elsif params[:view_type] == "day"%>
-		<% color_index = 0 %>
 		<% @events.each{ |name, events| %>
 			<% events.each{ |event| %>
 				var new_row = document.getElementById("calendar_day").insertRow();
@@ -226,14 +221,13 @@
 					inner_html += "<td class='calendar_month_cell_empty'></td>"
 				<% end %>
 				var event_class = "<%= ( ((event.start<@date.beginning_of_day) and (event.end>@date.end_of_day))?(""):( (event.start<@date.beginning_of_day)?(" radius_right"):( (event.end>@date.end_of_day)?(" radius_left"):(" radius_both") ) ) ) %>";
-				inner_html += "<td colspan='<%= colspan %>' style= 'padding-top:2px;padding-bottom:2px;' align='center' class='calendar_month_cell_empty'><div style='background:<%= colors[color_index] %>' class='" + event_class + "'><a style='color:white' href='/event/<%= event.id %>'><%= event.title %></a></div></td>"
+				inner_html += "<td colspan='<%= colspan %>' style= 'padding-top:2px;padding-bottom:2px;' align='center' class='calendar_month_cell_empty'><div class='calendar_month_event" + event_class + "'><a href='/event/<%= event.id %>'><%= event.title %></a></div></td>"
 				<% for i in 0...(24-(start_hour+colspan)) %>
 					inner_html += "<td class='calendar_month_cell_empty'></td>"
 				<% end %>
 				new_row.innerHTML = inner_html;
 				new_row.class = "calendar_month_cell_empty";
 			<% } %>
-			<% color_index = (color_index+1)%colors.length %>
 		<% } %>
 		var table = document.getElementById("calendar_day");
 		if(table.rows.length<3){

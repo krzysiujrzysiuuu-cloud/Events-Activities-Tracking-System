@@ -53,10 +53,25 @@ html, body{
 	position: relative;
 	max-width: 200px;
 	min-width: 200px;
+	background: $light;
 	height: 96vh;
-	background: #B0C4DE;
+	color:$dark; 
 }
-
+.nav_bar a{
+	color:$dark; 
+}
+.dashboard_header{
+	color:$light;
+	width:100%;
+	min-width:980px;
+	background-color:$black;
+}
+.dashboard_header a{ 
+	color:$light; 
+}
+#log_in_form{
+	
+}
 .add_event_form-div {
 	display: none;
 	position: fixed;
@@ -169,10 +184,14 @@ html, body{
 .calendar_view{
 	height:560px;
 	overflow-y:auto;
-	background: #04b6e2;
+	background-color: $dark;
 	color: #fff;
 	border-radius: 5px;
-  box-shadow: 0px 2px 6px rgba(2,2,2,0.2);
+	box-shadow: 0px 2px 6px rgba(2,2,2,0.2);
+}
+
+.calendar_view div{
+	
 }
 
 .calendar_month_cell_empty{
@@ -205,10 +224,32 @@ html, body{
 
 .log_in_home_page{
 	line-height: 2;
-	background-color: $color_suva_gray_approx;
+	background-color:$black;
+	color:$light;
 	min-height: 40px;
 }
 
-.sign_up_home_page{
-
+#sign_up_home_page{
+	
+	text-align: right;
+	width: 400px;
+    border: 5px solid $black_40;
+    padding: 30px;
+	background: $light;
+}
+button{
+	background-color: $dark;
+	color:$light;
+}
+input{
+	background-color: $black_40;
+	color:$light;
+}
+select{
+	background-color: $black_40;
+	color:$light;
+}
+.add_event_tag-element{
+	background-color: white;
+	
 }
