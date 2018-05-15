@@ -57,4 +57,50 @@ class AccountController < ApplicationController
 		end
 		redirect_to '/'
 	end
+	
+	def settings
+		if params[:id].to_s == session[:account]["id"].to_s
+			@account = Account.find(params[:id]);
+			groups = GroupMember.where(:accounts_id => params[:id]).select(:group_id)
+			@groups = Group.where(:id => groups)
+			render :layout => 'show_profile_layout'
+		else
+			redirect_to showProfile_path params[:id]
+		end
+	end
+	
+	def changePassword
+		if(params[:id].to_s == session[:account]["id"].to_s and 
+		   Account.find(params[:id]).password == params[:change_password][:current_password] and
+		   params[:change_password][:new_password] == params[:change_password][:confirm_new_password])
+			account = Account.find(params[:id])
+			account.password = params[:change_password][:new_password]
+			account.save!
+		end
+		redirect_to showProfile_path params[:id]
+	end
+	
+	def changeAvatar
+		if(params[:id].to_s == session[:account]["id"].to_s)
+			begin
+				account = Account.find(params[:id])
+				account.avatar = params[:account][:avatar]
+				account.save!
+			rescue ActiveRecord::RecordInvalid => invalid
+			end
+		end
+		#to remove avatar
+		#@user.remove_avatar!
+        #@user.save
+		redirect_to showProfile_path params[:id]
+	end
+	
+	def removeAvatar
+		if(params[:id].to_s == session[:account]["id"].to_s)
+			account = Account.find(params[:id])
+			account.remove_avatar!
+			account.save
+		end
+		redirect_to showProfile_path params[:id]
+	end
 end

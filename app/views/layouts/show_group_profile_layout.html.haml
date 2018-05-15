@@ -1,0 +1,68 @@
+!!!
+%html
+  %head
+    %title Events and Activities Tracking System
+    = stylesheet_link_tag 'application', 'media' => 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+
+  %body{:style => 'margin:0;'}
+    %div
+      %div{:align => 'left', :class => 'dashboard_header'}
+        = "Group: " + @group.name
+      %div{:align => 'right', :class => 'dashboard_header'}
+        = link_to 'Home', eats_wall_path
+        |
+        = link_to "Notifications(#{@notif_count})", notifications_path
+        |
+        = link_to "#{session[:account]['first_name']} #{session[:account]['last_name']}", showProfile_path(session[:account]["id"])
+        |
+        = link_to 'Log out', log_out_path, :style => "margin-right:10px;"
+    %div
+      %div.nav_bar
+        %div
+          %h6 Created by: #{@group.creator_name}
+          %h6 Created at: #{@group.created_at.strftime("%B %d, %Y")}
+        %hr
+        - if @is_admin and @is_member
+          %br
+          %button#add_event_button{:onclick => "showAddEventForm()"} Add event to group
+          %br
+          %br
+        %text Admin/s:
+        %br
+          - @groupAdmins.each do |admin|
+            = link_to "#{admin.first_name} #{admin.last_name}", showProfile_path(admin.id)
+            - if @is_admin and @is_member
+              = link_to "Remove from Admin", remove_from_admin_path(@group.id, admin.id)
+            %br
+        %text Member/s:
+        %br
+          - @groupMembers.each do |member|
+            = link_to "#{member.first_name} #{member.last_name}", showProfile_path(member.id)
+            - if @is_admin and @is_member
+              = link_to "Make Admin", change_to_admin_path(@group.id, member.id)
+            %br
+        - if @is_admin and @is_member
+          %br
+          %button#add_member_button{:onclick => "showAddMemberGroupForm()"} Edit Members
+          %br
+          %br
+          %button#delete_group_button{:onclick => "showDeleteGroupConfirmationForm()"} Delete group
+          %hr
+          %text Join Requests
+          %br
+          - if @joinRequests.length > 0
+            - @joinRequests.each do |user|
+              = link_to "#{user.first_name} #{user.last_name}", showProfile_path(user.id)
+              = link_to "Accept", join_group_response_path("true", @group.id, user.id)
+              = link_to "Reject", join_group_response_path("false", @group.id, user.id)
+              %br
+          - else
+            %text No Requests
+            %br
+        - if !@is_member
+          = link_to "Join Group", join_group_path(@group.id, session[:account]["id"])
+          
+      %div.yield
+        = yield

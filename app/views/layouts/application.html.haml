@@ -8,9 +8,9 @@
 
   %body{:style => 'margin:0;'}
     #main
-      - if flash[:notice]
-        #notice.message= flash[:notice]
-      - elsif flash[:warning]
-        #warning.message= flash[:warning]
+      -# if flash[:notice]
+        -# #notice.message= flash[:notice]
+      -# elsif flash[:warning]
+        -# #warning.message= flash[:warning]
 
       = yield

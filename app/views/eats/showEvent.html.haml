@@ -4,11 +4,11 @@
   %div{:align => 'right', :class => 'dashboard_header'}
     = link_to 'Home', eats_wall_path
     |
-    = link_to 'Notifications'
+    = link_to "Notifications(#{@notif_count})", notifications_path
     |
     = link_to "#{session[:account]['first_name']} #{session[:account]['last_name']}", showProfile_path(session[:account]["id"])
     |
-    = link_to 'Log out', log_out_path
+    = link_to 'Log out', log_out_path, :style => "margin-right:10px;"
 
 %div{:align => "center"}
   %div{:style => "width:60%;", :align => "left"}
@@ -24,6 +24,12 @@
       %text
         = @event.end.strftime("%B %-d, %Y at %I:%M %p")
     %br
+    %text
+      - if @event.public
+        = "Public event"
+      - else
+        = "Private event"
+    %br
     %text Created by:
     =link_to "#{@creator_name.first_name} #{@creator_name.last_name}", "/profile/#{@event.creator}"
     - if @event.is_group_event
@@ -34,16 +40,17 @@
     %text Tags:
     - @event.tags.each do |id, name|
       = link_to "#{name}", showProfile_path(id)
-      %br
+    %br
     %text Description:
     %p{:style => "text-indent:5%"}
-      = @event.description
+      = simple_format(@event.description)
     %div{:align => "right"}
       - if session[:account]["id"] == @event.creator
         %button{:onclick => "editEvent(#{@event.id})"} Edit
-        %button Delete
+        %a{:href => "#{delete_event_path(@event.id)}"}
+          %button Delete
       - elsif @event.tags.has_key?(session[:account]["id"])
-        %button Remove tag
+        = button_to 'Remove me from tags', remove_tag_path(@event.id, session[:account]["id"]), method: :delete
 - if session[:account]["id"] == @event.creator
   %div#edit_event_form_div_div.add_event_form-div
     %div.add_event_form-content

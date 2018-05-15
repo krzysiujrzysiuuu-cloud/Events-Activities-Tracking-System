@@ -24,7 +24,7 @@
     = time_field :new_event, 'end_time', :value =>"23:59"
     %br
     = label :new_event, :description, 'Description', :class => 'add_event_label'
-    = text_field :new_event, 'description', required:true
+    = text_area :new_event, 'description', required:true
     %br
     = label :new_event, '', :class => 'add_event_label'
     %input{:checked => "checked", :name => "new_event[public]", :type => "radio", :value => "1"}Public

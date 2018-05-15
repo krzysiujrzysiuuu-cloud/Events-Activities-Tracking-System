@@ -57,18 +57,25 @@ Rails.application.routes.draw do
   post '/sign_up' => 'account#signup', as: :sign_up
   get '/login' => 'account#login', as: :log_in
   get '/logout' => 'account#logout', as: :log_out
+  get '/account_settings/:id' => 'account#settings', as: :account_settings
+  put '/change_password/:id' => 'account#changePassword', as: :change_password
+  patch '/change_avatar/:id' => 'account#changeAvatar', as: :change_avatar
+  delete '/remove_avatar/:id' => 'account#removeAvatar', as: :remove_avatar
   
   get '/events' => 'eats#index', as: :eats_wall
-  post '/add_event' => 'eats#new', as: :add_event
+  get '/notifications' => 'eats#notifications', as: :notifications
+  post '/add_event' => 'eats#newEvent', as: :add_event
   get '/edit_event/:id' => 'eats#editEvent', as: :edit_event
   put '/update_event/:id' => 'eats#updateEvent', as: :update_event
+  get '/delete_event/:id' => 'eats#deleteEvent', as: :delete_event
+  delete '/remove_tag/:event_id/:acc_id' => 'eats#removeSingleTag', as: :remove_tag
   
   get '/profile/:id' => 'eats#showProfile', as: :showProfile
   get '/event/:id' => 'eats#showEvent', as: :showEvent
+  get '/group/:id' => 'eats#showGroupProfile', as: :show_group_profile
   
   post '/create_group' => 'eats#createGroup', as: :create_group
   delete '/delete_group/:id' => 'eats#deleteGroup', as: :delete_group
-  get '/group/:id' => 'eats#showGroupProfile', as: :show_group_profile
   post '/memberschange/:id' => 'eats#membersUpdate', as: :group_members_update
   get '/to_admin/:group_id/:acc_id' => 'eats#changeToAdmin', as: :change_to_admin
   get '/remove_from_admin/:group_id/:acc_id' => 'eats#removeFromAdmin', as: :remove_from_admin

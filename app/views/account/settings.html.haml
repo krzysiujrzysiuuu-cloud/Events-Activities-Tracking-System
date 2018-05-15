@@ -1,0 +1,26 @@
+%div
+  %h5 Account Settings
+  %div{:style=>"width:35%"}
+    %h6 Change Avatar
+    %hr{:style=>"width:98%", :align=>"center"}
+    = form_for @account, url: change_avatar_path(@account.id), html: { multipart: true } do |f|
+      = f.file_field :avatar
+      = f.hidden_field :avatar_cache
+      = f.submit 'Save'
+    = button_to 'Remove Avatar', remove_avatar_path(@account.id), :method => :delete
+  %br
+  %br
+  %div{:style=>"width:35%"}
+    %h6 Change Password
+    %hr{:style=>"width:98%", :align=>"center"}
+    = form_tag change_password_path(@account.id), :id => 'change_password_form', :method => :put do
+      = label :change_password, :current_password, 'Current Password', :class => 'add_event_label'
+      = password_field :change_password, 'current_password', required:true
+      %br
+      = label :change_password, :new_password, 'New Password', :class => 'add_event_label'
+      = password_field :change_password, 'new_password', required:true
+      %br
+      = label :change_password, :confirm_new_password, 'Confirm New Password', :class => 'add_event_label'
+      = password_field :change_password, 'confirm_new_password', required:true
+      %br
+      = submit_tag 'Change Password'

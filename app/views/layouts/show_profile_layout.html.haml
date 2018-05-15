@@ -1,0 +1,52 @@
+!!!
+%html
+  %head
+    %title Events and Activities Tracking System
+    = stylesheet_link_tag 'application', 'media' => 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+
+  %body{:style => 'margin:0;'}
+    %div
+      %div{:align => 'left', :class => 'dashboard_header'}
+        = @account.first_name
+        = @account.last_name
+      %div{:align => 'right', :class => 'dashboard_header'}
+        = link_to 'Home', eats_wall_path
+        |
+        = link_to "Notifications(#{@notif_count})", notifications_path
+        |
+        = link_to "#{session[:account]['first_name']} #{session[:account]['last_name']}", showProfile_path(session[:account]["id"])
+        |
+        = link_to 'Log out', log_out_path, :style => "margin-right:10px;"
+    %div
+      %nav.nav_bar
+        = image_tag @account.avatar.url, size: "190x190"
+        %hr{:style=>"width:90%"}
+        %h6 Groups
+        - @groups.each do |group|
+          = link_to "#{group.name}", show_group_profile_path(group.id)
+          %br
+        %hr{:style=>"width:90%"}
+        - if @account.id == session[:account]["id"]
+          = button_to 'Account Settings', account_settings_path(@account.id), :method => :get
+        - else
+          %button{:onclick => 'compareCalendar(this)', :is_up => 'f'} Compare calendars
+      
+      %div.yield
+        = yield
+:javascript
+  function compareCalendar(button){
+    
+    var day = new Date();
+    day = day.getMonth()+1 + "-" + day.getDate() + "-" + day.getFullYear();
+    if(button.getAttribute("is_up") == "f"){
+      button.setAttribute("is_up", "t");
+      button.innerHTML = "Uncompare calendars"
+      $('#c_view').load('/load_calendar/month/'+day+'/#{@account.id.to_s+"," +session[:account]["id"].to_s}');
+    }else{
+      button.setAttribute("is_up", "f");
+      button.innerHTML = "Compare calendars"
+      $('#c_view').load('/load_calendar/month/'+day+'/#{@account.id}');
+    }
+  }

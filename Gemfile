@@ -14,7 +14,6 @@ gem 'coffee-rails', '~> 4.1.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 gem 'bootstrap', '~> 4.0.0.alpha6'
-gem 'jquery-rails'
 gem 'haml'
 
 # Use jquery as the JavaScript library
@@ -34,6 +33,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+
+gem 'carrierwave', '~>1.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

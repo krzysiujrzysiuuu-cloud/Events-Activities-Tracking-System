@@ -7,6 +7,7 @@
     = submit_tag 'Log in'
 
 %div#sign_up_home_page
+  %h5 Sign-up
   = form_tag sign_up_path, :id=>'sign_up_form', :method => :post do
     = label :new_account, :first_name, 'First name'
     = text_field :new_account, 'first_name', required:true

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180427052415) do
+ActiveRecord::Schema.define(version: 20180513141746) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "first_name"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20180427052415) do
     t.string   "password"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "avatar"
   end
 
   create_table "events", force: :cascade do |t|
@@ -53,6 +54,16 @@ ActiveRecord::Schema.define(version: 20180427052415) do
     t.boolean  "is_admin"
   end
 
+  create_table "group_notifications", force: :cascade do |t|
+    t.integer  "group_id"
+    t.boolean  "for_all"
+    t.integer  "accounts_id"
+    t.string   "content"
+    t.boolean  "is_read"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "groups", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at",   null: false
@@ -61,9 +72,19 @@ ActiveRecord::Schema.define(version: 20180427052415) do
     t.string   "creator_name"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.integer  "accounts_id"
+    t.string   "content"
+    t.boolean  "is_read"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "tags", force: :cascade do |t|
-    t.integer "events_id"
-    t.integer "accounts_id"
+    t.integer  "events_id"
+    t.integer  "accounts_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
 end

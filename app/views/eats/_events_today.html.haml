@@ -1,16 +1,17 @@
 %div{:align=>"center"}
   %h6
-    = @events_today.first.start.strftime("%B %d, %Y")
-  %table
-    - for i in 0..24 do
-      %th{:style => "border: 1px solid black"}
+    = DateTime.now.strftime("%B %d, %Y")
+  %table.events_today_table{:style => "border: 1px solid black;"}
+    - for i in 0...24 do
+      %td{:style => "border: 1px solid black"}
         = (i<10?("0"+i.to_s):i.to_s) + ":00"
     - @events_today.each do |event|
       %tr
         - event.start.hour.times do
-          %td{:style => "border: 1px solid black"}
-        %td{:colspan => "#{event.end.hour+(event.end.min<30?0:1)-event.start.hour+1}", :align => "center", :style => "border: 1px solid black"}
-          %div
-            = link_to "#{event.title}",  "/event/#{event.id}"
+          %td{:style => "border-left: 1px solid black;border-right: 1px solid black"}
+        %td{:colspan => "#{event.end.hour+(event.end.min<30?0:1)-event.start.hour}", :align => "center", :style => "border-left: 1px solid black;border-right: 1px solid black"}
+          %div{ :style=> 'background:#007bff;', :class => "#{((DateTime.parse(event.start.to_s)>=DateTime.now.utc.beginning_of_day)?('radius_left'):(''))} #{((DateTime.parse(event.end.to_s)<=DateTime.now.utc.end_of_day)?('radius_right'):(''))}"}
+            - puts "#{DateTime.parse(event.start.to_s)>=DateTime.now.utc.beginning_of_day}, #{DateTime.parse(event.start.to_s)}, #{DateTime.now.utc.beginning_of_day}"
+            = link_to "#{event.title}",  "/event/#{event.id}", :style => 'color:white'
         - (24-event.end.hour-(event.end.min<30?0:1)).times do
-          %td{:style => "border: 1px solid black"}
+          %td{:style => "border-left: 1px solid black;border-right: 1px solid black"}
