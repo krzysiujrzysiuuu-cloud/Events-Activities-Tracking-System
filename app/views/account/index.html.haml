@@ -1,30 +1,40 @@
-%div.log_in_home_page{:align => 'right'}
-  = form_tag log_in_path, :id => 'log_in_form', :method => :get do
-    = label :log_in, :username, 'Username'
-    = text_field :log_in, 'username', required:true 
-    = label :log_in, :password, 'Password'
-    = password_field :log_in, 'password', required:true
-    = submit_tag 'Log in'
+%link{:href => "http://fonts.googleapis.com/css?family=Arvo", :rel => "stylesheet", :type => "text/css"}/
+
+%div.log_in_home_page
+  %div.log_in_left{:align => "left"}
+    %img{:alt => "EATS icon", :src => "/assets/calendar.png", :style => "width:70px; height:70px; margin-top: 10px; margin-left: 20px;"}  
+    %font{:size => "5", :style => "font-weight: bold;text-shadow: 3px 2px rgba(0.4,0,0,0);vertical-align:middle;"} Events and Activities Tracking System
+
+  %div.log_in_right{:align => 'right'}
+    = form_tag log_in_path, :id => 'log_in_form', :method => :get do  
+      = label :log_in, :username, 'Username'
+      = text_field :log_in, 'username', required:true, :class => 'login_field' 
+      = label :log_in, :password, 'Password'
+      = password_field :log_in, 'password', required:true, :class => 'login_field' 
+      = submit_tag 'LOG IN', :class => 'li_button'
+      %br
+      = link_to 'Forgot Password?', forgot_password_path, :style => 'color: rgb(120,120,120);font-size:13px;'
+
 
 %div#sign_up_home_page
-  %h5 Sign-up
+  %h2{:align => 'right'} SIGN-UP
   = form_tag sign_up_path, :id=>'sign_up_form', :method => :post do
-    = label :new_account, :first_name, 'First name'
-    = text_field :new_account, 'first_name', required:true
+    = label :new_account, :first_name, 'First Name'
+    = text_field :new_account, 'first_name', required:true, :class => 'fields'
     %br
-    = label :new_account, :last_name, 'Last name'
-    = text_field :new_account, 'last_name', required:true
+    = label :new_account, :last_name, 'Last Name'
+    = text_field :new_account, 'last_name', required:true, :class => 'fields'
     %br
     = label :new_account, :email, 'E-mail'
-    = text_field :new_account, 'email', required:true, :type => 'email'
+    = text_field :new_account, 'email', required:true, :class => 'fields', :type => 'email'
     %br
     = label :new_account, :username, 'Username'
-    = text_field :new_account, 'username', required:true
+    = text_field :new_account, 'username', required:true, :class => 'fields'
     %br
     = label :new_account, :password, 'Password'
-    = password_field :new_account, 'password', required:true
+    = password_field :new_account, 'password', required:true, :class => 'fields'
     %br
     = label :new_account, :confirm_password, 'Confirm Password'
-    = password_field :new_account, 'confirm_password', required:true
+    = password_field :new_account, 'confirm_password', required:true, :class => 'fields'
     %br
-    = submit_tag 'Sign up'
+    = submit_tag 'Sign Up!', :class => 'button'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180513141746) do
+ActiveRecord::Schema.define(version: 20180519015223) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "first_name"
@@ -19,9 +19,13 @@ ActiveRecord::Schema.define(version: 20180513141746) do
     t.string   "email"
     t.string   "username"
     t.string   "password"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
     t.string   "avatar"
+    t.string   "pass_reset_token"
+    t.datetime "pass_reset_expiration"
+    t.boolean  "email_confirmed"
+    t.string   "email_confirm_token"
   end
 
   create_table "events", force: :cascade do |t|
@@ -62,6 +66,13 @@ ActiveRecord::Schema.define(version: 20180513141746) do
     t.boolean  "is_read"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "group_tags", force: :cascade do |t|
+    t.integer  "events_id"
+    t.integer  "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "groups", force: :cascade do |t|

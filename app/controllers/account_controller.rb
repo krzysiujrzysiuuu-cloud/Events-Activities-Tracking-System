@@ -38,6 +38,7 @@ class AccountController < ApplicationController
 		# check if fields are valid
 		# check if account exists e.g. username, password, email
 		new_account = signup_params
+		account = nil
 		if !Account.where(:username => new_account[:username]).empty?
 			flash[:warning] = "Username already exists!"
 		elsif !Account.where(:email => new_account[:email]).empty?
@@ -50,12 +51,17 @@ class AccountController < ApplicationController
 			em = new_account[:email]
 			un = new_account[:username]
 			ps = new_account[:password]
-			Account.create(first_name: fn, last_name: ln, email: em, username: un, password: ps)
+			account = Account.create(first_name: fn, last_name: ln, email: em, username: un, password: ps, email_confirmed: false, email_confirm_token: ("Confirm#{DateTime.now}#{em}").hash)
 			flash[:notice] = "Sign up successful!"
 		elsif(new_account[:password] != new_account[:confirm_password])
 			flash[:warning] = "Password is not equal"
 		end
-		redirect_to '/'
+		
+		if account
+			redirect_to email_confirmation_send_path(account.id)
+		else
+			redirect_to '/'
+		end
 	end
 	
 	def settings
@@ -70,6 +76,7 @@ class AccountController < ApplicationController
 	end
 	
 	def changePassword
+		account = nil
 		if(params[:id].to_s == session[:account]["id"].to_s and 
 		   Account.find(params[:id]).password == params[:change_password][:current_password] and
 		   params[:change_password][:new_password] == params[:change_password][:confirm_new_password])
@@ -77,10 +84,42 @@ class AccountController < ApplicationController
 			account.password = params[:change_password][:new_password]
 			account.save!
 		end
+		
+		if account
+			flash[:notice] = "Password successfully changed!"
+		else
+			flash[:warning] = "Password unsuccessfully changed!"
+		end
 		redirect_to showProfile_path params[:id]
 	end
 	
+	def changeEmail
+		account = nil
+		email_in_use = !(Account.where(:email => params[:change_email][:email]).empty?)
+		if(params[:id].to_s == session[:account]["id"].to_s and 
+		   Account.find(params[:id]).password == params[:change_email][:current_password] and
+		   !email_in_use)
+			account = Account.find(params[:id])
+			account.email = params[:change_email][:email]
+			account.email_confirmed = false
+			account.email_confirm_token = ("Confirm#{DateTime.now}#{params[:change_email][:email]}").hash
+			account.save!
+		end
+		
+		if account
+			redirect_to email_confirmation_send_path(account.id)
+		else
+			if email_in_use
+				flash[:warning] = "Email is already in use!"
+			else
+				flash[:warning] = "Email unsuccessfully changed!"
+			end
+			redirect_to showProfile_path params[:id]
+		end
+	end
+	
 	def changeAvatar
+		account = nil
 		if(params[:id].to_s == session[:account]["id"].to_s)
 			begin
 				account = Account.find(params[:id])
@@ -92,15 +131,108 @@ class AccountController < ApplicationController
 		#to remove avatar
 		#@user.remove_avatar!
         #@user.save
+		if account
+			flash[:notice] = "Avatar successfully changed!"
+		else
+			flash[:warning] = "Avatar unsuccessfully changed!"
+		end
 		redirect_to showProfile_path params[:id]
 	end
 	
 	def removeAvatar
+		account = nil
 		if(params[:id].to_s == session[:account]["id"].to_s)
 			account = Account.find(params[:id])
 			account.remove_avatar!
-			account.save
+			account.save!
+		end
+		
+		if account
+			flash[:notice] = "Avatar successfully changed!"
+		else
+			flash[:warning] = "Avatar unsuccessfully changed!"
 		end
 		redirect_to showProfile_path params[:id]
+	end
+	
+	def emailConfirmationSend
+		account = Account.find(params[:id])
+		if account
+			if account.email_confirmed
+				flash[:warning] = "Account email already confirmed!"
+			elsif AccountsMailer.emailConfirmation(account).deliver_now
+				
+			else
+				flash[:warning] = "Email is already in use!"
+			end
+		else
+			flash[:warning] = "Account does not exist!"
+			redirect_to root_path
+		end
+	end
+	
+	def emailConfirmation
+		account = Account.find(params[:id])
+		if account
+			if account.email_confirm_token == params[:token]
+				account.email_confirmed = true
+				account.save!
+				flash[:notice] = "Email successfully confirmed!"
+			else
+				flash[:warning] = "Cannot confirm email!"
+			end
+		else
+			flash[:warning] = "Account does not exist!"
+		end
+		redirect_to root_path
+	end
+	
+	def passwordResetRequest
+		account = Account.find_by(:email => params[:password_reset][:email], :username => params[:password_reset][:username])
+		if account
+			if account.email_confirmed
+				account.pass_reset_token = ("#{account.email}#{DateTime.now}").hash
+				account.pass_reset_expiration = DateTime.now.next_week
+				account.save!
+				AccountsMailer.password_reset(account).deliver_now
+				flash[:notice] = "Password reset mail has been sent!"
+			else
+				flash[:notice] = "Email has not yet been confirmed! Please check your mail for email confirmation!"
+			end
+		end
+		redirect_to root_path
+	end
+	
+	def editResetPassword
+		@account = Account.find_by(:pass_reset_token => params[:token], :email => params[:email])
+		if @account
+		else
+			flash[:warning] = "Invalid credentials for password reset!"
+			redirect_to root_path
+		end
+	end
+	
+	def resetPassword
+		account = Account.find(params[:id])
+		if account.pass_reset_token == params[:token] and
+			params[:change_password][:new_password] == params[:change_password][:confirm_new_password]
+			
+			account.password = params[:change_password][:new_password]
+			account.pass_reset_token = nil
+			account.pass_reset_expiration = nil
+			account.save!
+			flash[:notice] = "Password was successfully reset!"
+		else
+			flash[:warning] = "Password was unsuccessfully reset!"
+		end
+		redirect_to root_path
+	end
+	
+	#static pages
+	
+	def forgotPassword
+	end
+	
+	def passwordResetTokenExpired
 	end
 end

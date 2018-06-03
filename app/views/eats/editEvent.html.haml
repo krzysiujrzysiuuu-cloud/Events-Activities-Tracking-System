@@ -3,13 +3,13 @@
   = hidden_field_tag :edit_event_is_group_event, false, :value => "#{@event.is_group_event}"
   = hidden_field_tag :edit_event_group_id, :value => "#{@event.group_id}"
   = label :edit_event, :title, 'Title', :class => 'add_event_label'
-  = text_field :edit_event, 'title', required:true, :value => "#{@event.title}"
+  = text_field :edit_event, 'title', required:true, :value => "#{@event.title}", :style => "background-color: rgb(211,212,209)" 
   - if !@event.is_group_event
     %br
-    = label :edit_event, :tags, 'Tags', :class => 'add_event_label'
+    = label :edit_event, :tags, 'Share to', :class => 'add_event_label'
     %div.add_event_tags
-      = text_field :edit_event, :tags_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off'
-      %select{:id => 'edit_tag_suggestion_list', :onchange => 'editTagListChange(this)'}
+      = text_field :edit_event, :tags_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off', :style => "background-color: rgb(211,212,209)" 
+      %select{:id => 'edit_tag_suggestion_list', :onchange => 'editTagListChange(this)', :style =>"background-color: rgb(142,199,183)"}
         %option{:value => 'null'}
           = "--"
       %div{:id => 'edit_tags_list'}

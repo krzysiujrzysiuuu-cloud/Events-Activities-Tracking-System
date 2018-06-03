@@ -2,3 +2,6 @@
 <% @tags.each{ |account| %>
 <div class="add_event_tag-element"><%= account.first_name %> <span class="add_event_tag-remove" onclick = "removeFromEditTagList(this.id)" id = "<%= account.id %>">×</span></div>
 <% } %>
+<% @group_tags.each{ |group| %>
+<div class="add_event_tag-element"><%= group.name %> <span class="add_event_tag-remove" onclick = "removeFromEditTagList(this.id)" id = "<%= "group_"+group.id.to_s %>">×</span></div>
+<% } %>

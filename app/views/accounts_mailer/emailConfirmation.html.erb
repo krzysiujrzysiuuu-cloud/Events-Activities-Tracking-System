@@ -1,0 +1,8 @@
+<h1>Email Confirmation</h1>
+
+<p>To confirm your email click the link below:</p>
+
+<%= link_to "Confirm Email", email_confirmation_url(@user.id, @user.email_confirm_token, email: @user.email) %>
+<p>
+If you did not do this, please login to <%= link_to "our home page", root_url %> update your email again in the account setting
+</p>

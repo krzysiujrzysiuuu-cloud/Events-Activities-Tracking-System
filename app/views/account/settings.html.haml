@@ -1,26 +1,43 @@
-%div
-  %h5 Account Settings
-  %div{:style=>"width:35%"}
-    %h6 Change Avatar
-    %hr{:style=>"width:98%", :align=>"center"}
-    = form_for @account, url: change_avatar_path(@account.id), html: { multipart: true } do |f|
-      = f.file_field :avatar
-      = f.hidden_field :avatar_cache
-      = f.submit 'Save'
-    = button_to 'Remove Avatar', remove_avatar_path(@account.id), :method => :delete
-  %br
-  %br
-  %div{:style=>"width:35%"}
-    %h6 Change Password
-    %hr{:style=>"width:98%", :align=>"center"}
-    = form_tag change_password_path(@account.id), :id => 'change_password_form', :method => :put do
-      = label :change_password, :current_password, 'Current Password', :class => 'add_event_label'
-      = password_field :change_password, 'current_password', required:true
-      %br
-      = label :change_password, :new_password, 'New Password', :class => 'add_event_label'
-      = password_field :change_password, 'new_password', required:true
-      %br
-      = label :change_password, :confirm_new_password, 'Confirm New Password', :class => 'add_event_label'
-      = password_field :change_password, 'confirm_new_password', required:true
-      %br
-      = submit_tag 'Change Password'
+%div.edit_page
+  %div{:align => 'center', }
+    %link{:href => "http://fonts.googleapis.com/css?family=Arvo", :rel => "stylesheet", :type => "text/css"}/	
+    %link{:href => "/assets/calendar.png", :rel => "shortcut icon", :type => "image/x-icon"}/  
+  
+    %h5{:style => "color:white;font-size:25px;font-weight:bold"} Account Settings
+    %div{:style=>"width:35%", :align => 'left'}
+      %h6 Change Avatar
+      %hr{:style=>"width:98%", :align=>"center"}
+      = form_for @account, url: change_avatar_path(@account.id), html: { multipart: true } do |f|
+        = f.file_field :avatar
+        = f.hidden_field :avatar_cache
+        = f.submit 'Save'
+      = button_to 'Remove Avatar', remove_avatar_path(@account.id), :method => :delete
+    %br
+    %br
+    %div{:style=>"width:35%", :align => 'left'}
+      %h6 Change Password
+      %hr{:style=>"width:98%", :align=>"center"}
+      = form_tag change_password_path(@account.id), :id => 'change_password_form', :method => :put do
+        = label :change_password, :current_password, 'Current Password', :class => 'add_event_label'
+        = password_field :change_password, 'current_password', required:true, :style => "background-color:rgb(211,212,209)"
+        %br
+        = label :change_password, :new_password, 'New Password', :class => 'add_event_label'
+        = password_field :change_password, 'new_password', required:true, :style => "background-color:rgb(211,212,209)"
+        %br
+        = label :change_password, :confirm_new_password, 'Confirm New Password', :class => 'add_event_label'
+        = password_field :change_password, 'confirm_new_password', required:true, :style => "background-color:rgb(211,212,209)"
+        %br
+        = submit_tag 'Change Password'
+    %br
+    %br
+    %div{:style=>"width:35%", :align => 'left'}
+      %h6 Change Email
+      %hr{:style=>"width:98%", :align=>"center"}
+      = form_tag change_email_path(@account.id), :id => 'change_email_form', :method => :put do
+        = label :change_email, :current_password, 'Current Password', :class => 'add_event_label'
+        = password_field :change_email, 'current_password', required:true, :style => "background-color:rgb(211,212,209)"
+        %br
+        = label :change_email, :email, 'New email', :class => 'add_event_label'
+        = text_field :change_email, 'email', required:true, :style => "background-color:rgb(211,212,209)"
+        %br
+        = submit_tag 'Change Email'

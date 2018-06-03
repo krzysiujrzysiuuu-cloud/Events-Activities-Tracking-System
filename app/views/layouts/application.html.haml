@@ -1,5 +1,6 @@
 !!!
 %html
+  %link{:href => "/assets/calendar.png", :rel => "shortcut icon", :type => "image/x-icon"}/
   %head
     %title Events and Activities Tracking System
     = stylesheet_link_tag 'application', 'media' => 'all', 'data-turbolinks-track' => true
@@ -7,10 +8,10 @@
     = csrf_meta_tags
 
   %body{:style => 'margin:0;'}
-    #main
-      -# if flash[:notice]
-        -# #notice.message= flash[:notice]
-      -# elsif flash[:warning]
-        -# #warning.message= flash[:warning]
+    %div
+      - if flash[:notice]
+        #notice.message= flash[:notice]
+      - elsif flash[:warning]
+        #warning.message= flash[:warning]
 
       = yield

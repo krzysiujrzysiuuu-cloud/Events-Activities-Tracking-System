@@ -1,12 +1,13 @@
+%link{:href => "http://fonts.googleapis.com/css?family=Arvo", :rel => "stylesheet", :type => "text/css"}/
 %div
   %h6 Create Group
   = form_tag create_group_path, :id => 'create_group_form', :method => :post do
     = label :new_group, :name, 'Name', :class => 'add_event_label'
-    = text_field :new_group, 'name', required:true
+    = text_field :new_group, 'name', required:true, :style => "background-color: rgb(211,212,209)" 
     %br
     = label :new_group, :members, 'Add member', :class => 'add_event_label'
-    = text_field :new_group, :add_members_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off'
-    %select{:id => 'add_member_suggestion_list', :onchange => 'addMemberListChange(this)'}
+    = text_field :new_group, :add_members_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off', :style => "background-color: rgb(211,212,209)" 
+    %select{:id => 'add_member_suggestion_list', :onchange => 'addMemberListChange(this)', :style => "background-color:rgb(142,199,183)"}
       %option{:value => 'null'}
         = "--"
     %div{:id => 'add_members_list'}

@@ -1,3 +1,4 @@
+%link{:href => "http://fonts.googleapis.com/css?family=Arvo", :rel => "stylesheet", :type => "text/css"}/
 %div
   %div{:align => 'left', :class => 'dashboard_header'}
     %text Events and Activity Tracking System
@@ -10,9 +11,9 @@
     |
     = link_to 'Log out', log_out_path, :style => "margin-right:10px;"
 
-%div{:align => "center"}
+%div{:align => "center", :style => "border: 5px solid rgb(142,199,183);border-style: groove;padding: 30px;background: rgb(222,239,235);"}
   %div{:style => "width:60%;", :align => "left"}
-    %h3{:align => "center"}
+    %h3{:align => "center", :style => "font-weight:bold"}
       =@event.title
     %hr
     %div{:style=>"float:left;width:50%", :align=>"left"}
@@ -39,16 +40,19 @@
     %br
     %text Tags:
     - @event.tags.each do |id, name|
-      = link_to "#{name}", showProfile_path(id)
+      - if(id.starts_with?("group_"))
+        = link_to "#{name}", show_group_profile_path(id.split("_")[1])
+      - else
+        = link_to "#{name}", showProfile_path(id)
     %br
     %text Description:
     %p{:style => "text-indent:5%"}
       = simple_format(@event.description)
     %div{:align => "right"}
       - if session[:account]["id"] == @event.creator
-        %button{:onclick => "editEvent(#{@event.id})"} Edit
+        %button{:onclick => "editEvent(#{@event.id})",:style => "background-color: rgb(142,199,183);"} Edit
         %a{:href => "#{delete_event_path(@event.id)}"}
-          %button Delete
+          %button{:style => "background-color: rgb(142,199,183);"} Delete
       - elsif @event.tags.has_key?(session[:account]["id"])
         = button_to 'Remove me from tags', remove_tag_path(@event.id, session[:account]["id"]), method: :delete
 - if session[:account]["id"] == @event.creator

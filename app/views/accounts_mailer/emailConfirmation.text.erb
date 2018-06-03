@@ -1,0 +1,5 @@
+To confirm your email click the link below:
+
+<%= link_to "Confirm Email", email_confirmation_url(@user.id,@user.email_confirm_token, email: @user.email) %>
+
+If you did not do this, please login to <%= link_to "our home page", root_url %> update your email again in the account setting

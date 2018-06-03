@@ -1,3 +1,4 @@
+%link{:href => "http://fonts.googleapis.com/css?family=Arvo", :rel => "stylesheet", :type => "text/css"}/
 %div{:id => 'calendar'}
   %div{:id =>'c_view'}
   
@@ -39,7 +40,7 @@
         = hidden_field_tag :new_event_is_group_event, true
         = hidden_field_tag :new_event_group_id, "#{@group.id}"
         = label :new_event, :title, 'Title', :class => 'add_event_label'
-        = text_field :new_event, 'title', required:true
+        = text_field :new_event, 'title', required:true, :style => "background-color: rgb(211,212,209)"
         %br
         %div{:id => 'tags_list'}
           = text_field :new_event, :tags, :style => 'display:none'
@@ -69,8 +70,8 @@
       %h6 Edit Members
       = form_tag group_members_update_path(@group.id), :id => 'add_members_form', :method => :post do
         = label :new_group, :members, 'Edit members', :class => 'add_event_label'
-        = text_field :new_group, :add_members_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off'
-        %select{:id => 'add_member_suggestion_list', :onchange => 'addMemberListChange(this)'}
+        = text_field :new_group, :add_members_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off', :style => "background-color: rgb(211,212,209)"
+        %select{:id => 'add_member_suggestion_list', :onchange => 'addMemberListChange(this)', :style => "background-color:rgb(142,199,183)"}
           %option{:value => 'null'}
             = "--"
         

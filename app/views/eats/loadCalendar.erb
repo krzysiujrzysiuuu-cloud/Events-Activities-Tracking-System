@@ -37,21 +37,21 @@
 	
 </script>
 <div align="right">
-    <button onclick="previous()"> < </button>
     <button onclick="loadMonthView()"> Month </button>
     <button onclick="loadWeekView()"> Week </button>
     <button onclick="loadDayView()"> Day </button>
-	<button onclick="next()"> > </button>
 </div
 
 <div>
+	<h3 align="center"><button onclick="previous()"> < </button>
 	<% if params[:view_type] == "month" %>
-		<h3 align="center"><%= @date.strftime("%B %Y") %> </h3>
+		<%= @date.strftime("%B %Y") %>
 	<% elsif params[:view_type] == "week"%>
-		<h3 align="center"><%= (@date.beginning_of_week-1).strftime("%B %d, %Y") + " - " + (@date.end_of_week-1).strftime("%B %d, %Y")%></h3>
+		<%= (@date.beginning_of_week-1).strftime("%B %d, %Y") + " - " + (@date.end_of_week-1).strftime("%B %d, %Y")%>
 	<% elsif params[:view_type] == "day"%>
-		<h3 align="center"><%= @date.strftime("%B %d, %Y") %></h3>
+		<%= @date.strftime("%B %d, %Y") %>
 	<% end %>
+	<button onclick="next()"> > </button></h3>
 </div>
 <div align="center" class="calendar_view" id = "calendar_view">
 	<% if params[:view_type] == "month" %>

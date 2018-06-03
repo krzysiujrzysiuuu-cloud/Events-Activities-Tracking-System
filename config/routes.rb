@@ -55,11 +55,18 @@ Rails.application.routes.draw do
   #   end
   root 'account#index'
   post '/sign_up' => 'account#signup', as: :sign_up
+  get '/forgot_password/' => 'account#forgotPassword', as: :forgot_password
+  get '/reset_password_request' => 'account#passwordResetRequest', as: :password_reset_request
+  get '/edit_reset_password/:token' =>  'account#editResetPassword', as: :edit_reset_password
+  put '/reset_password/:id/:token' => 'account#resetPassword', as: :reset_password
+  get '/email_confirmation_send/:id' => 'account#emailConfirmationSend', as: :email_confirmation_send
+  get '/email_confirmation/:id/:token' => 'account#emailConfirmation', as: :email_confirmation
   get '/login' => 'account#login', as: :log_in
   get '/logout' => 'account#logout', as: :log_out
   get '/account_settings/:id' => 'account#settings', as: :account_settings
   put '/change_password/:id' => 'account#changePassword', as: :change_password
   patch '/change_avatar/:id' => 'account#changeAvatar', as: :change_avatar
+  put '/change_email/:id' => 'account#changeEmail', as: :change_email
   delete '/remove_avatar/:id' => 'account#removeAvatar', as: :remove_avatar
   
   get '/events' => 'eats#index', as: :eats_wall
@@ -82,7 +89,7 @@ Rails.application.routes.draw do
   get '/join_group/:group_id/:acc_id' => 'eats#joinGroup', as: :join_group
   get '/join_request_response/:accept/:group_id/:acc_id' => 'eats#joinGroupResponse', as: :join_group_response
   
-  get '/suggestInput/:name/:id/:with_group' => 'eats#suggestInput', as: :suggestInput
+  get '/suggestInput/:name/:id/:with_group/:with_self' => 'eats#suggestInput', as: :suggestInput
   get '/suggestInput/' => 'eats#suggestInput', as: :emptySuggestInput
   get '/addTag/:tags' => 'eats#addTag', as: :addTag
   get '/addTag/' => 'eats#addTag', as: :addEmptyTag

@@ -1,12 +1,20 @@
 !!!
 %html
+  %link{:href => "http://fonts.googleapis.com/css?family=Arvo", :rel => "stylesheet", :type => "text/css"}/
   %head
-    %title Events and Activities Tracking System
+    %link{:href => "/assets/calendar.png", :rel => "shortcut icon", :type => "image/x-icon"}/  
+    %title
+      = @account.first_name + " " + @account.last_name
     = stylesheet_link_tag 'application', 'media' => 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
 
   %body{:style => 'margin:0;'}
+    %div
+      - if flash[:notice]
+        #notice.message= flash[:notice]
+      - elsif flash[:warning]
+        #warning.message= flash[:warning]
     %div
       %div{:align => 'left', :class => 'dashboard_header'}
         = @account.first_name
@@ -23,6 +31,9 @@
       %nav.nav_bar
         = image_tag @account.avatar.url, size: "190x190"
         %hr{:style=>"width:90%"}
+        %h6 Started at: #{@account.created_at.strftime("%B %d, %Y")}
+        - if (@account.email_confirmed)
+          %h6 Email: #{@account.email}
         %h6 Groups
         - @groups.each do |group|
           = link_to "#{group.name}", show_group_profile_path(group.id)

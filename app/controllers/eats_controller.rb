@@ -78,13 +78,24 @@ class EatsController < ApplicationController
 			new_entry.save
 			if(tags.length > 0)
 				tags.each{ |id|
-					new_tag = Tag.new
-					new_tag.events_id = new_entry.id
-					new_tag.accounts_id = id
-					new_tag.save
-					#--NOTIF--
-					createNotification(:type => :account, :accounts_id => id,
-					:content => [Account.find(new_entry.creator), "tagged you in an event", new_entry])
+					if id.starts_with?("group_")
+						#puts "a group tag found! #{id.split("_")[1]}"
+						new_group_tag = GroupTag.new
+						new_group_tag.events_id = new_entry.id
+						new_group_tag.group_id = id.split("_")[1]
+						new_group_tag.save
+						#--NOTIF---
+						createNotification(:type => :group, :for_all => true, :group_id => id.split("_")[1],
+						:content => [Account.find(new_entry.creator), "tagged group", Group.find(id.split("_")[1]), "in an event"])
+					else
+						new_tag = Tag.new
+						new_tag.events_id = new_entry.id
+						new_tag.accounts_id = id
+						new_tag.save
+						#--NOTIF--
+						createNotification(:type => :account, :accounts_id => id,
+						:content => [Account.find(new_entry.creator), "tagged you in an event", new_entry])
+					end
 				}
 			end
 		end
@@ -105,6 +116,10 @@ class EatsController < ApplicationController
 			@tagsList = ""
 			@tags.each{ |l|
 				@tagsList = @tagsList + l.accounts_id.to_s + ","
+			}
+			@group_tags = GroupTag.where(:events_id => params[:id])
+			@group_tags.each{ |l|
+				@tagsList = @tagsList + "group_"+l.group_id.to_s+","
 			}
 			render :layout => false
 			return
@@ -253,6 +268,9 @@ class EatsController < ApplicationController
 			@joinRequests = Account.where(:id => @joinRequests.select(:accounts_id)).select(:id, :first_name, :last_name)
 		end
 		@group_events = Event.where(:group_id => params[:id])
+		group_tags = GroupTag.where(:group_id => params[:id])
+		@group_events = @group_events + Event.where(:id => group_tags.pluck(:events_id))
+		@group_events = @group_events.uniq
 		render :layout => 'show_group_profile_layout'
 	end
 	
@@ -415,8 +433,14 @@ class EatsController < ApplicationController
 					if (GroupMember.where(:accounts_id => session[:account]["id"], :group_id => g_id).empty?)
 						group_events = group_events.where(:public => true)
 					end
-					group_events = addTags(group_events)
-					@events[group.name] = group_events
+					tagged_group_events = GroupTag.where(:group_id => g_id)
+					tagged_group_events = Event.where(:id => tagged_group_events.pluck(:events_id))
+					tagged_group_events = filterDateRange(tagged_group_events, params[:view_type], @date)
+					if (GroupMember.where(:accounts_id => session[:account]["id"], :group_id => g_id).empty?)
+						tagged_group_events = tagged_group_events.where(:public => true)
+					end
+					#group_events = addTags(group_events)
+					@events[group.name] = (group_events + tagged_group_events).uniq
 				else
 					user = Account.find(id)
 					user_created_events = Event.where(:creator => id, :is_group_event => false)
@@ -431,13 +455,13 @@ class EatsController < ApplicationController
 						tagged_events = tagged_events.where(:public => true)
 					end
 					tagged_events = filterDateRange(tagged_events, params[:view_type], @date)
-					tagged_events = addTags(tagged_events)
+					#tagged_events = addTags(tagged_events)
 					group_events = GroupMember.where(:accounts_id => id)
 					group_events = Event.where(:group_id => group_events.select(:group_id))
 					groups = GroupMember.where(:accounts_id => session[:account]["id"]).select(:id).pluck;
 					
 					group_events = filterDateRange(group_events, params[:view_type], @date)
-					group_events = addTags(group_events)
+					#group_events = addTags(group_events)
 					user_event = user_created_events + tagged_events + group_events
 					user_event = user_event.uniq
 					@events[user.first_name + " " + user.last_name] = user_event
@@ -449,7 +473,7 @@ class EatsController < ApplicationController
 	end	
 	
 	def suggestInput
-		@suggestions = Account.where("first_name like '#{params[:name]}%' AND id != #{session[:account]["id"]}").select(:id, :first_name, :last_name);
+		@suggestions = Account.where("first_name like '#{params[:name]}%'"+ ( (params[:with_self]=="1")?(""):(" AND id != #{session[:account]["id"]}") )).select(:id, :first_name, :last_name);
 		if(params[:with_group] == "1")
 			@with_group = true;
 			@group_suggestions = Group.where("name like '#{params[:name]}%'").select(:id, :name);
@@ -459,26 +483,44 @@ class EatsController < ApplicationController
 	
 	def addTag
 		@tags = [];
+		@group_tags = [];
 		@yield = "";
+		@group_ids = [];
 		if(params[:tags])
 			@ids = params[:tags].split(",").uniq
+			ids = [];
 			@ids.each{ |x|
+				if(x.starts_with?("group_"))
+					@group_ids << x.split("_")[1]
+				else
+					ids << x;
+				end
 				@yield = @yield + x + ","
 			}
 			@tags = Account.where(:id => @ids).select(:id, :first_name, :last_name)
+			@group_tags = Group.where(:id => @group_ids).select(:id, :name)
 		end
 		render :layout => false
 	end
 	
 	def editAddTag
 		@tags = [];
+		@group_tags = [];
 		@yield = "";
+		@group_ids = [];
 		if(params[:tags])
 			@ids = params[:tags].split(",").uniq
+			ids = [];
 			@ids.each{ |x|
+				if(x.starts_with?("group_"))
+					@group_ids << x.split("_")[1]
+				else
+					ids << x;
+				end
 				@yield = @yield + x + ","
 			}
 			@tags = Account.where(:id => @ids).select(:id, :first_name, :last_name)
+			@group_tags = Group.where(:id => @group_ids).select(:id, :name)
 		end
 		render :layout => false
 	end
@@ -616,7 +658,11 @@ class EatsController < ApplicationController
 		tags = Tag.where(:events_id => event_id)
 		ret = Hash.new
 		tags.each{ |tag|
-			ret[tag.accounts_id] = getName(tag.accounts_id)
+			ret[tag.accounts_id.to_s] = getName(tag.accounts_id)
+		}
+		group_tags = GroupTag.where(:events_id => event_id)
+		group_tags.each{ |g_tag|
+			ret["group_"+g_tag.id.to_s] = Group.find(g_tag.group_id).name
 		}
 		ret
 	end

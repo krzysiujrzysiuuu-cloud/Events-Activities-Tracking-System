@@ -1,15 +1,16 @@
-%div
+%link{:href => "http://fonts.googleapis.com/css?family=Arvo", :rel => "stylesheet", :type => "text/css"}/
+%div{:style => "background-color: rgb(222,239,235)"}
   %h6 Add Event Form
   = form_tag add_event_path, :id => 'add_event_form', :method => :post do
     = hidden_field_tag :new_event_is_group_event, false
     = hidden_field_tag :new_event_group_id
     = label :new_event, :title, 'Title', :class => 'add_event_label'
-    = text_field :new_event, 'title', required:true
+    = text_field :new_event, 'title', required:true, :style => "background-color: rgb(211,212,209)" 
     %br
-    = label :new_event, :tags, 'Tags', :class => 'add_event_label'
+    = label :new_event, :tags, 'Share to', :class => 'add_event_label'
     %div.add_event_tags
-      = text_field :new_event, :tags_field, :oninput => 'suggestInput(this.id)', :list => 'suggestion_list', :autocomplete => 'off'
-      %select{:id => 'tag_suggestion_list', :onchange => 'tagListChange(this)'}
+      = text_field :new_event, :tags_field, :oninput => 'suggestInput(this.id)',:style => "background-color:rgb(211,212,209)", :list => 'suggestion_list', :autocomplete => 'off'
+      %select{:id => 'tag_suggestion_list', :onchange => 'tagListChange(this)', :style => "background-color:rgb(142,199,183)"}
         %option{:value => 'null'}
           = "--"
       %div{:id => 'tags_list'}

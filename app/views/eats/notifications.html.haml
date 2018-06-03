@@ -1,20 +1,21 @@
-%h3 Notifications
-%hr{:style => "width:98%", :align => "center"}
-%div
-  %table{:style => "width:90%"}
-    - @notifications.each do |notif|
-      %tr{:style => "background:#{(notif.is_read)?("white"):("#f8f9fa")};"}
-        %td
-          - notif.content.split("|").each do |block|
-            - splitted_block = block.split(",")
-            - if splitted_block.length == 3
-              - if splitted_block[2] == "acc"
-                = link_to "#{splitted_block[0]}", showProfile_path(splitted_block[1])
-              - elsif splitted_block[2] == "ev"
-                = link_to "#{splitted_block[0]}", showEvent_path(splitted_block[1])
-              - elsif splitted_block[2] == "grp"
-                = link_to "#{splitted_block[0]}", show_group_profile_path(splitted_block[1])
-            - elsif splitted_block.length == 1
-              = splitted_block[0]
-        %td
-          = notif.created_at.strftime("%B %-d, %Y at %I:%M %p")
+%div.notif_page
+  %h3 Notifications
+  %hr{:style => "width:98%", :align => "center"}
+  %div
+    %table{:style => "width:90%"}
+      - @notifications.each do |notif|
+        %tr{:style => "background:#{(notif.is_read)?("white"):("#f8f9fa")};"}
+          %td
+            - notif.content.split("|").each do |block|
+              - splitted_block = block.split(",")
+              - if splitted_block.length == 3
+                - if splitted_block[2] == "acc"
+                  = link_to "#{splitted_block[0]}", showProfile_path(splitted_block[1])
+                - elsif splitted_block[2] == "ev"
+                  = link_to "#{splitted_block[0]}", showEvent_path(splitted_block[1])
+                - elsif splitted_block[2] == "grp"
+                  = link_to "#{splitted_block[0]}", show_group_profile_path(splitted_block[1])
+              - elsif splitted_block.length == 1
+                = splitted_block[0]
+          %td
+            = notif.created_at.strftime("%B %-d, %Y at %I:%M %p")

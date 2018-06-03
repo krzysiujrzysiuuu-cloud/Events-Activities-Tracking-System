@@ -13,7 +13,20 @@
  */
  @import "bootstrap";
  
- $black: rgb(0,0,0);
+$black: rgb(0,0,0);
+$field_white:rgb(200,200,200);
+$dirty_white: rgb(100,100,100);
+$body_white: rgb(230,230,230);
+
+$blue_butt: rgb(0,0,150);
+$red_butt: rgb(150,0,0);
+$green_butt: rgb(0,150,0);
+
+$light_blue: rgb(0,0,220);
+$light_green: rgb(0,220,0);
+$light_red: rgb(220,0,0);
+
+$black: rgb(0,0,0);
 $black_40: rgba(0,0,0,0.4);
 $color_romance_approx: #fefefe;
 $color_suva_gray_approx: #888;
@@ -30,15 +43,26 @@ $color_silver_chalice_approx: #aaa;
 
 html, body{
 	height:100%;
+    font-family: 'Arvo', serif;
+    font-size: 15px;
+	background: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) ), url('calendar.jpg');
+    //background-image: url("bg2.jpg");  
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+	background-filter: blur(10px)
 }
 
 .dashboard_header {
 	float: left;
+	font-weight:bold;
 	width: 50%;
 	color:$light;
 	min-height: 50px;
-	background-color:$black;
+	background-color: rgb(27,163,177);
 	line-height: 50px;
+	border-bottom: 2px solid $dark;	
+	padding: 10px;
 }
 
 .add_event_label {
@@ -58,10 +82,12 @@ html, body{
 	position: relative;
 	max-width: 200px;
 	min-width: 200px;
-	background: $light;
+	background: rgb(222,239,235);
 	height: 92.3vh;
 	color:$dark;
 	word-wrap:break-word;
+	overflow-y:auto;
+	padding:5px;
 }
 
 .yield {
@@ -80,8 +106,45 @@ html, body{
 .dashboard_header a{ 
 	color:$light; 
 }
+
 #log_in_form{
-	
+	//padding0-top: 50px;	
+	margin-right:40px;
+}
+
+.log_in_right input.login_field {
+	background-color: $field_white;
+	border: 2px solid $field_white;
+	text-indent: 4px;
+	color: $dirty_white;
+	font-size: 16px;
+	font-family: arial;
+	margin-right: 10px;
+}
+
+.log_in_right label {
+	font-family: calibri light;
+	font-weight: bold;
+	font-size: 18px;
+	margin-right: 8px;
+}
+
+.log_in_right input.li_button {
+	margin-top: 20px;
+	background-color: $blue_butt;
+	color: white;
+	border-radius: 5px;
+	font-size: 16px;
+	font-weight: bold;
+	font-family: arial;
+	cursor: pointer;
+	border: none;
+	width: 105px;
+	height: 35px;	
+}
+
+.log_in_right input.li_button:hover {
+	background-color: $light_blue;
 }
 
 .add_event_form-div {
@@ -200,27 +263,94 @@ html, body{
 
 .log_in_home_page{
 	line-height: 2;
-	background-color:$black;
-	color:$light;
-	min-height: 40px;
+	background-color: rgb(230,230,230);
+	color:$dirty_white;
+	min-height: 13px;
+	box-shadow: 0 0 15px rgb(80,80,80);
+	//border-style: outset;
+	overflow: auto;
+}
+
+.log_in_left{
+	float: left;
+}
+.log_in_right{
+	float: right;
 }
 
 #sign_up_home_page{
-	
+	box-shadow: 0 8px 15px rgb(120,120,120);
+	background-color: rgb(230,230,230);
+	border: 1px solid rgb(200,200,200);
+	border-width: thin;
 	text-align: right;
-	width: 400px;
-    border: 5px solid $black_40;
+	width: 550px;
+	height: 90%;
     padding: 30px;
-	margin-top: 20px;
-	margin-left: 20px;
-	background: $light;
+    margin-top: 35px;
+    margin-left: 55%;
+    //margin-bottom: 40px;
 }
+
+#sign_up_home_page label {
+	color: $dirty_white;
+	margin-right: 10px;
+	font-size: 16px;
+	font-family: arial;
+	font-weight: bold;
+}
+
+#sign_up_home_page input.fields {
+	background-color: $field_white;
+	border: 2px solid $field_white;
+	text-indent: 4px;
+	width: 65%;
+	height: 45px;
+	color: $dirty_white;
+	margin-top: 10px;
+	font-size: 16px;
+	font-family: arial;
+}
+
+#sign_up_home_page input.button {
+	border: none;
+	background-color: $blue_butt;
+	color: rgb(255,255,255);
+	margin-top: 15px;
+	margin-right: 7px;
+	width: 110px;
+	height: 40px;
+	border-radius: 5px;
+	font-size: 16px;
+	font-family: arial;
+	font-weight: bold;
+	outline: none;
+	cursor: pointer;
+}
+
+#sign_up_home_page input.button:hover {
+	background-color: $light_blue;
+}
+
+#sign_up_home_page h2 {
+	color: $dirty_white;
+	font-weight: bold;
+	margin-right: 10px;
+	font-family: arial;
+}
+
 button{
 	background-color: $dark;
 	color:$light;
 }
-input{
+
+input[type=email], input[type=password],input[type=text]{
 	background-color: $black_40;
+	color:$light;
+}
+
+input[type=submit]{
+	background-color: rgb(142,199,183);
 	color:$light;
 }
 select{
@@ -230,4 +360,23 @@ select{
 .add_event_tag-element{
 	background-color: white;
 	
+}
+
+#forgot_password{
+	padding: 50px;
+	border: 5px solid rgb(142,199,183);
+	background: rgb(222,239,235);
+}
+
+.edit_page{
+	margin-left: 25%; margin-right: 25%;
+	border: 5px solid rgb(142,199,183);
+	background: rgb(222,239,235);
+}
+
+.notif_page{
+	margin-left: 10%; margin-right: 10%;
+	padding:50px;
+	border: 5px solid rgb(142,199,183);
+	background: rgb(222,239,235);
 }

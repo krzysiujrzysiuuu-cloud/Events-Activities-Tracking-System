@@ -26,21 +26,25 @@ function suggestInput(ev){
 	var with_groups = '';
 	if(ev == 'new_event_tags_field'){
 		list_to_load = '#tag_suggestion_list';
-		with_groups = '/0';
+		with_groups = '/1';
+		with_self = '/0';
 	}else if(ev == 'search_bar'){
 		list_to_load = '#search_suggestion_list';
 		with_groups = '/1';
+		with_self = '/1';
 	}else if(ev == 'new_group_add_members_field'){
 		list_to_load = '#add_member_suggestion_list';
 		with_groups = '/0';
+		with_self = '/0';
 	}else if(ev == 'edit_event_tags_field'){
 		list_to_load = '#edit_tag_suggestion_list';
-		with_groups = '/0';
+		with_groups = '/1';
+		with_self = '/0';
 	}
 	if(text_field.value == ""){
 		$(list_to_load).load('/suggestInput/'+' '+'/'+ev+with_groups);
 	}else{
-		$(list_to_load).load('/suggestInput/'+text_field.value+'/'+ev+with_groups);
+		$(list_to_load).load('/suggestInput/'+text_field.value+'/'+ev+with_groups+with_self);
 	}
 }
 
@@ -61,7 +65,7 @@ function editTagListChange(ev){
 		if(tagss == ''){
 			$('#edit_tags_list').load('/editAddTag/'+ev.value);
 		}else{
-			$('#edit_tags_list').load('editAddTag/'+tagss+ev.value);
+			$('#edit_tags_list').load('/editAddTag/'+tagss+ev.value);
 		}
 	}
 }
